@@ -1,0 +1,18 @@
+.player {
+    background: #080C0A;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 20;
+    padding: 10px;
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.6rem;
+  }
+
+.button {
+  height: 20px;
+  width: auto;
+}

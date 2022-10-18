@@ -1,0 +1,47 @@
+@use "sass:list";
+
+body {
+  background-image: radial-gradient(circle at 50% 50%, #112620 0%, #020605 55%);
+  scroll-behavior: smooth;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 10px;
+}
+
+$colors: #E5D8FA, #AA8ED7, #45BF75, #6B40FB;
+
+:root {
+  @for $i from 1 through length($colors) {
+    --color-#{$i}: #{list.nth($colors, $i)};
+  }
+}
+
+@for $i from 1 through length($colors) {
+  .color-#{$i} {
+    color: var(--color-#{$i});
+  }
+}
+
+body {
+  margin: 0;
+  font-family: VT323;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+// Type
+.type-1 {
+  font-size: 2.4rem;
+}
+
+.type-2 {
+  font-size: 3.5rem;
+}
