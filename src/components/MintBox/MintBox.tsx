@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import {
   useAccount,
   useContract,
@@ -13,6 +13,36 @@ import { Randomizer } from "../Randomizer/Randomizer";
 import { TextInput } from "../TextInput/TextInput";
 import styles from "./styles.module.scss";
 import abi from "../../assets/lpabi.json";
+import { ethers } from "ethers";
+
+// export function useAuctionCountdown() {
+//     const endTime = useAppStore((store) => store.endTime);
+//     const [flip, updateFlip] = useState(false);
+
+//     useEffect(() => {
+//       const timeout = setTimeout(() => {
+//         updateFlip((f) => !f);
+//       }, 1000);
+
+//       return () => {
+//         clearTimeout(timeout);
+//       };
+//     }, [flip]);
+
+//     const end = new BN(endTime ?? "0");
+//     const start = new BN(Math.floor(Date.now() / 1000));
+//     const pastEndTime = start.gte(end);
+//     return {
+//       end,
+//       start,
+//       pastEndTime,
+//       flip,
+//     };
+//   }
+
+//   const endToMsDate = new Date(end.times(1000).toNumber());
+
+//   const formatted = format(endToMsDate, "MMM dd 'at' h:mm:ss a");
 
 export function MintBox() {
   const { isConnected } = useAccount();
@@ -26,6 +56,9 @@ export function MintBox() {
   });
 
   const { chain, chains } = useNetwork();
+  const [hasStarted, updateHasStarted] = useState<boolean | null>(null);
+
+  const [data, updateData] = useState<any>();
 
   console.log(chain, chains);
 
@@ -34,10 +67,12 @@ export function MintBox() {
       const { timestamp: currentBlockTimeStamp } = await provider.getBlock(
         "latest"
       );
-      console.log(provider);
-      console.log(contract);
       const startTime = await contract?.startTime();
-      console.log(startTime);
+      console.log(startTime.toString());
+      updateHasStarted(
+        ethers.BigNumber.from(currentBlockTimeStamp).gte(startTime)
+      );
+      updateData({ startTime: startTime.toString() });
     };
     fn();
   }, []);
@@ -54,6 +89,9 @@ export function MintBox() {
             <p className="color-3 type-1">Current price: 1 ETH</p>
             <p className="color-3 type-1">Total remaining: 10000 / 10000</p>
             <p className="color-3 type-1">Time left: 30d 22h 04s</p>
+            {hasStarted === false && (
+              <p className="color-3 type-1">Starts in: {data?.startTime}</p>
+            )}
           </div>
         </Grid>
         <Grid item xs={12} md={6}>
