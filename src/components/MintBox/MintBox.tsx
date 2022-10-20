@@ -1,14 +1,46 @@
 import { Grid } from "@mui/material";
 import React from "react";
-import { useAccount } from "wagmi";
+import {
+  useAccount,
+  useContract,
+  useContractRead,
+  useNetwork,
+  useProvider,
+} from "wagmi";
 import { Button } from "../Button/Button";
 import { ConnectButton } from "../ConnectButton/ConnectButton";
 import { Randomizer } from "../Randomizer/Randomizer";
 import { TextInput } from "../TextInput/TextInput";
 import styles from "./styles.module.scss";
+import abi from "../../assets/lpabi.json";
 
 export function MintBox() {
   const { isConnected } = useAccount();
+
+  const provider = useProvider({ chainId: 1337 });
+
+  const contract = useContract({
+    address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+    abi,
+    signerOrProvider: provider,
+  });
+
+  const { chain, chains } = useNetwork();
+
+  console.log(chain, chains);
+
+  React.useEffect(() => {
+    const fn = async () => {
+      const { timestamp: currentBlockTimeStamp } = await provider.getBlock(
+        "latest"
+      );
+      console.log(provider);
+      console.log(contract);
+      const startTime = await contract?.startTime();
+      console.log(startTime);
+    };
+    fn();
+  }, []);
 
   return (
     <div className={styles.wrap}>
