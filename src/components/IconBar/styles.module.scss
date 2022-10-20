@@ -1,0 +1,9 @@
+.wrap {
+  display: flex;
+  justify-content: center;
+  margin: 5rem;
+  gap: 2rem;
+  & img {
+    width: 24px;
+  }
+}

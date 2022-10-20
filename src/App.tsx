@@ -9,6 +9,7 @@ import styles from "./App.module.scss";
 import scImg from "./assets/smart-contract.png";
 import stopImg from "./assets/stop-sign.png";
 import { Randomizer } from "./components/Randomizer/Randomizer";
+import { IconBar } from "./components/IconBar/IconBar";
 
 function App() {
   return (
@@ -34,6 +35,9 @@ function App() {
       </Player>
 
       <div style={{ paddingTop: "60px" }} className="wrap" id="info">
+        <p style={{ marginBottom: "20px" }} className="color-4 type-2">
+          The LP
+        </p>
         <Grid spacing={4} container>
           <Grid item xs={12} md={6}>
             <h1 className="jumbo">
@@ -62,7 +66,7 @@ function App() {
               <p className="type-1 color-2">
                 Funds and NFTs are held in trustless escrow for no more than 33
                 days. If the project doesn't sell out in 33 days the experiment
-                ends and you can re-claim your ETH (minus gas fees).
+                ends and you can withdraw your ETH (minus gas fees).
               </p>
 
               <p className="type-1 color-2">
@@ -143,7 +147,10 @@ function App() {
         <Randomizer />
       </div>
 
-      <div style={{ maxWidth: "643px", userSelect: "text" }} className="wrap">
+      <div
+        style={{ maxWidth: "643px", userSelect: "text", marginBottom: "10px" }}
+        className="wrap"
+      >
         <div className="spacer">
           <h2 id="trustless-escrow" className="type-1 color-1">
             Trustless Escrow
@@ -227,6 +234,7 @@ function App() {
           </p>
         </div>
       </div>
+      <IconBar />
     </>
   );
 }

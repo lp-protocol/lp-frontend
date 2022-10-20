@@ -1,13 +1,18 @@
 import { Grid } from "@mui/material";
 import React from "react";
+import { useAccount } from "wagmi";
 import { Button } from "../Button/Button";
+import { ConnectButton } from "../ConnectButton/ConnectButton";
 import { Randomizer } from "../Randomizer/Randomizer";
+import { TextInput } from "../TextInput/TextInput";
 import styles from "./styles.module.scss";
 
 export function MintBox() {
+  const { isConnected } = useAccount();
+
   return (
     <div className={styles.wrap}>
-      <Grid container>
+      <Grid spacing={5} container>
         <Grid item xs={12} md={6}>
           <div className="spacer">
             <p className="color-2 type-1">Dutch auction</p>
@@ -21,7 +26,16 @@ export function MintBox() {
         </Grid>
         <Grid item xs={12} md={6}>
           <div className={styles.btnWrap}>
-            <Button>Connect Wallet</Button>
+            {isConnected && (
+              <>
+                <label className="type-1 color-1">
+                  How many would you like to mint?
+                </label>
+                <TextInput />
+                <Button>Mint Now</Button>
+              </>
+            )}
+            <ConnectButton />
           </div>
         </Grid>
       </Grid>
