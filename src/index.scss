@@ -13,9 +13,10 @@ body {
 
 html {
   font-size: 10px;
+  scroll-behavior: smooth;
 }
 
-$colors: #E5D8FA, #AA8ED7, #45BF75, #6B40FB;
+$colors: #e5d8fa, #aa8ed7, #45bf75, #6b40fb;
 
 :root {
   @for $i from 1 through length($colors) {
@@ -36,7 +37,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-
 // Type
 .type-1 {
   font-size: 2.4rem;
@@ -44,4 +44,25 @@ body {
 
 .type-2 {
   font-size: 3.5rem;
+}
+
+// layout
+.spacer > *:not(:last-child) {
+  margin-bottom: 2rem;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: normal;
+}
+
+.center {
+  text-align: center;
+}
+
+a,
+a:visited {
+  color: var(--color-1);
 }
