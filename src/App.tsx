@@ -114,7 +114,7 @@ function App() {
               <div>
                 <h2 className="type-2 color-3">Scenario 1</h2>
                 <p className="type-1 color-1">
-                  All 10k LP NFTs are minted within 33 days
+                  First 9k LP NFTs are minted within 33 days
                 </p>
               </div>
               <p className="type-1 color-2">
@@ -131,7 +131,7 @@ function App() {
               <div>
                 <h2 className="type-2 color-3">Scenario 2</h2>
                 <p className="type-1 color-1">
-                  All 10k LP NFTs are NOT minted within 33 days
+                  First 9k LP NFTs are NOT minted within 33 days
                 </p>
               </div>
               <p className="type-1 color-2">
@@ -166,11 +166,11 @@ function App() {
             the bag.
           </p>
           <p className="type-1 color-2">
-            The escrow period ends after all 10k are minted, or after 33 days -
-            whichever comes first. If the initial 10,000 LP NFTs are not minted
-            within 30 days then The LP considers the project a failure and it is
-            scrapped. You'll be able to withdraw your funds from the smart
-            contract (minus gas fees).
+            The escrow period ends after the first 9k are minted, or after 33
+            days - whichever comes first. If the initial 9,000 LP NFTs are not
+            minted within 33 days then The LP considers the project a failure
+            and it is scrapped. You'll be able to withdraw your funds from the
+            smart contract (minus gas fees).
           </p>
           <h2 id="instant-liquidity" className="type-1 color-1">
             Instant Liquidity
@@ -179,10 +179,10 @@ function App() {
           <p className="type-1 color-2">
             This is when things get interesting. Once the first 9,000 LP NFTs
             are minted half of the mint proceeds are locked in the smart
-            contract and an additional 1,000 NFTs are instantly minted to
-            provide a pool of liquidity which enables instant sells and buys.
-            All project royalties from external marketplaces like Opensea and
-            LooksRare are added to this pool.
+            contract and an additional 1,000 NFTs are instantly minted using
+            ERC-2309 to provide a pool of liquidity which enables instant sells
+            and buys. All project royalties from external marketplaces like
+            Opensea and LooksRare are added to this pool.
           </p>
           <p className="type-1 color-2">
             The LP smart contract contains its own trustless marketplace
