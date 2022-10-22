@@ -79,9 +79,10 @@ function App() {
               <h2 className="type-2 color-3">Instant Liquidity</h2>
               <p className="type-1 color-2">
                 Half of mint proceeds and all external royalties are used to
-                fuel instant NFT liquidity. Marketplace functionality is built
-                directly into the LP smart contract enabling instant buys and
-                sells.
+                fuel instant NFT liquidity. After the first 9k LP NFTs are
+                minted an additional 1,000 are minted to provide liquidity for
+                instant buys and sells. Marketplace functionality is built
+                directly into the LP smart contract.
               </p>
 
               <p className="type-1 color-2">
@@ -176,16 +177,17 @@ function App() {
           </h2>
 
           <p className="type-1 color-2">
-            This is when things get interesting. Once all 10,000 LP NFTs are
-            minted your NFTs become transferable. Half of the mint proceeds are
-            locked in the smart contract to provide a pool of liquidity. All
-            project royalties from external marketplaces like Opensea and
+            This is when things get interesting. Once the first 9,000 LP NFTs
+            are minted half of the mint proceeds are locked in the smart
+            contract and an additional 1,000 NFTs are instantly minted to
+            provide a pool of liquidity which enables instant sells and buys.
+            All project royalties from external marketplaces like Opensea and
             LooksRare are added to this pool.
           </p>
           <p className="type-1 color-2">
             The LP smart contract contains its own trustless marketplace
             functionality. If you'd like to sell an LP NFT you own then you can
-            instantly swap it for ETH because of the ETH liquidity pool from the
+            instantly swap it for ETH because of the liquidity pool from the
             initial mint proceeds, on-going royalties, and on-chain fees set in
             place by the LP smart contract itself. The amount of ETH you'll get
             is determined by the amount of ETH in the pool.
@@ -231,6 +233,13 @@ function App() {
             referencing the single on-chain sprite sheet. Since the LP art is
             pixelated we can use built in browser properties to render tiny
             pixel images at arbitrary sizes.
+            <br />
+            <br />A note about the Safari Browser: Safari does not fully support
+            the method used to render the on-chain image. It shows blurry at
+            anything above 40x40px. If for some reason you are required to
+            render your LP NFT image in Safari you can use a fallback canvas
+            method, which we are using for the above preview images, to render a
+            crisp image.
           </p>
         </div>
       </div>

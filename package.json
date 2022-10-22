@@ -13,6 +13,7 @@
     "@types/node": "^16.11.65",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "bignumber.js": "^9.1.0",
     "classnames": "^2.3.2",
     "connectkit": "^0.0.2",
     "date-fns": "^2.29.3",

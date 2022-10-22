@@ -8,12 +8,18 @@ import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { infuraProvider } from "wagmi/providers/infura";
 
 const { chains, provider } = configureChains(
-  [chain.mainnet, chain.localhost],
+  [chain.mainnet, chain.goerli, chain.localhost],
   [
     // infuraProvider({ apiKey: process.env.REACT_APP_INFURA_KEY }),
 
     jsonRpcProvider({
       rpc: (_chain) => {
+        if (_chain.id === chain.goerli.id) {
+          return {
+            http: `https://goerli.infura.io/v3/be4dac94367a40168af1aadd4423eead`,
+            webSocket: `wss://goerli.infura.io/ws/v3/be4dac94367a40168af1aadd4423eead`,
+          };
+        }
         return {
           http: `http://127.0.0.1:8545`,
           webSocket: `ws://127.0.0.1:8545`,
