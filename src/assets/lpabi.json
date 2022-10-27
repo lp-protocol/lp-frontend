@@ -10,6 +10,41 @@
         "internalType": "contract TheLPRenderer",
         "name": "_renderer",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxPubSale",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxTeam",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxLp",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "duration",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "teamMintWallet",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -69,6 +104,11 @@
   {
     "inputs": [],
     "name": "IncorrectPayment",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidQueryRange",
     "type": "error"
   },
   {
@@ -365,7 +405,33 @@
   },
   {
     "inputs": [],
+    "name": "DISCOUNT_RATE",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "DURATION",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "MAX_LP",
     "outputs": [
       {
         "internalType": "uint256",
@@ -391,7 +457,33 @@
   },
   {
     "inputs": [],
+    "name": "MAX_PUB_SALE",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "MAX_SUPPLY",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "MAX_TEAM",
     "outputs": [
       {
         "internalType": "uint256",
@@ -525,7 +617,7 @@
   },
   {
     "inputs": [],
-    "name": "discountRate",
+    "name": "endTime",
     "outputs": [
       {
         "internalType": "uint256",
@@ -537,13 +629,82 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "endTime",
-    "outputs": [
+    "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "tokenId",
         "type": "uint256"
+      }
+    ],
+    "name": "explicitOwnershipOf",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "addr",
+            "type": "address"
+          },
+          {
+            "internalType": "uint64",
+            "name": "startTimestamp",
+            "type": "uint64"
+          },
+          {
+            "internalType": "bool",
+            "name": "burned",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint24",
+            "name": "extraData",
+            "type": "uint24"
+          }
+        ],
+        "internalType": "struct IERC721A.TokenOwnership",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "tokenIds",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "explicitOwnershipsOf",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "addr",
+            "type": "address"
+          },
+          {
+            "internalType": "uint64",
+            "name": "startTimestamp",
+            "type": "uint64"
+          },
+          {
+            "internalType": "bool",
+            "name": "burned",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint24",
+            "name": "extraData",
+            "type": "uint24"
+          }
+        ],
+        "internalType": "struct IERC721A.TokenOwnership[]",
+        "name": "",
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
@@ -557,32 +718,6 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "gameOver",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getAllTokensForSale",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",
@@ -678,19 +813,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getTotalTokensForSale",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -735,30 +857,6 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "mappingIdToIndex",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "exists",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "idx",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -830,30 +928,6 @@
         "internalType": "address",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "from",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "to",
-        "type": "uint256"
-      }
-    ],
-    "name": "paginateTokensForSale",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "output",
-        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",
@@ -1045,17 +1119,46 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "tokensOfOwner",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
         "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "stop",
         "type": "uint256"
       }
     ],
-    "name": "tokensForSale",
+    "name": "tokensOfOwnerIn",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "uint256[]",
         "name": "",
-        "type": "uint256"
+        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",
@@ -1140,6 +1243,19 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "duration",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateDuration",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "newFee",
         "type": "uint256"
       }
@@ -1170,7 +1286,33 @@
         "type": "uint256"
       }
     ],
+    "name": "updateMaxPrice",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
     "name": "updateMinBuyPrice",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateMinPrice",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

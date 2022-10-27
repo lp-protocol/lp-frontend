@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import logo from "./logo.svg";
 import "./App.scss";
 import { Grid } from "@mui/material";
@@ -10,13 +10,36 @@ import scImg from "./assets/smart-contract.png";
 import stopImg from "./assets/stop-sign.png";
 import { Randomizer } from "./components/Randomizer/Randomizer";
 import { IconBar } from "./components/IconBar/IconBar";
+import { DataProviderContext } from "./components/DataProvider/DataProvider";
+import { Trade } from "./components/Trade/Trade";
+
+function useMatchMedia() {
+  const [isSm, updateIsSm] = useState(false);
+
+  React.useEffect(() => {
+    const handler = () => {
+      let sm = window.matchMedia("(max-width: 600px)");
+      updateIsSm(sm.matches);
+    };
+    window.addEventListener("resize", handler);
+    handler();
+    return () => {
+      window.removeEventListener("resize", handler);
+    };
+  }, []);
+
+  return { isSm };
+}
 
 function App() {
+  const { isSm } = useMatchMedia();
+  const { lockedIn } = useContext(DataProviderContext);
   return (
     <>
       <Player>
         {({ play, pause, playing }) => (
-          <div
+          <a
+            href="#info"
             onClick={() => {
               if (playing) {
                 pause();
@@ -27,15 +50,15 @@ function App() {
             className="animation-wrap"
           >
             <img className="animation" src="/animation.gif" />
-            <a href="#info" className="scroll">
+            <div className="scroll">
               <div className="scroll-down">Scroll</div>
-            </a>
-          </div>
+            </div>
+          </a>
         )}
       </Player>
 
-      <div style={{ paddingTop: "60px" }} className="wrap" id="info">
-        <p style={{ marginBottom: "20px" }} className="color-4 type-2">
+      <div style={{ padding: "6rem 1rem 0" }} className="wrap" id="info">
+        <p style={{ marginBottom: "2rem" }} className="color-4 type-2">
           The LP
         </p>
         <Grid spacing={4} container>
@@ -48,10 +71,77 @@ function App() {
             </h2>
           </Grid>
           <Grid item xs={12} md={6}>
-            <MintBox />
+            {!lockedIn && <MintBox />}
+            {lockedIn && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    maxWidth: "400px",
+                    borderRadius: "16px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <Randomizer />
+                </div>
+              </div>
+            )}
           </Grid>
         </Grid>
+        <div style={{ maxWidth: "600px", margin: "auto", marginTop: "10rem" }}>
+          <h2
+            style={{ fontWeight: "normal", textAlign: "justify" }}
+            className="type-1 color-2"
+          >
+            A new model for NFT sales that solves the NFT liquidity issue by
+            using mint proceeds to bootstrap liquidity, provides instant
+            buy/sell functionality, and rewards holders.
+          </h2>
+        </div>
       </div>
+
+      {!lockedIn && (
+        <>
+          {!isSm && (
+            <div style={{ width: "100%", display: "flex" }}>
+              <div style={{ width: "16.66666667%" }}>
+                <Randomizer />
+              </div>
+              <div style={{ width: "16.66666667%" }}>
+                <Randomizer />
+              </div>
+              <div style={{ width: "16.66666667%" }}>
+                <Randomizer />
+              </div>
+              <div style={{ width: "16.66666667%" }}>
+                <Randomizer />
+              </div>
+              <div style={{ width: "16.66666667%" }}>
+                <Randomizer />
+              </div>
+              <div style={{ width: "16.66666667%" }}>
+                <Randomizer />
+              </div>
+            </div>
+          )}
+
+          {isSm && (
+            <div style={{ width: "100%", display: "flex" }}>
+              <div style={{ width: "100%" }}>
+                <Randomizer />
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {lockedIn && <Trade />}
 
       <div className="wrap">
         <div className={styles.howHeader}>
@@ -142,10 +232,6 @@ function App() {
             </div>
           </Grid>
         </Grid>
-      </div>
-
-      <div style={{ maxWidth: "500px", userSelect: "none" }} className="wrap">
-        <Randomizer />
       </div>
 
       <div

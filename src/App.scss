@@ -9,7 +9,7 @@
 .wrap {
   max-width: 1400px;
   width: 100%;
-  margin: 10em auto 20em;
+  margin: 10rem auto 10rem;
   padding: 0 10px;
 }
 
@@ -52,6 +52,7 @@
 .animation-wrap {
   position: relative;
   cursor: pointer;
+  display: block;
 }
 
 .animation {

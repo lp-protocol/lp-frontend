@@ -6,9 +6,10 @@ import { ConnectKitProvider, getDefaultClient } from "connectkit";
 import { WagmiConfig, createClient, configureChains, chain } from "wagmi";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { infuraProvider } from "wagmi/providers/infura";
+import { DataProvider } from "./components/DataProvider/DataProvider";
 
 const { chains, provider } = configureChains(
-  [chain.mainnet, chain.goerli, chain.localhost],
+  [chain.localhost],
   [
     // infuraProvider({ apiKey: process.env.REACT_APP_INFURA_KEY }),
 
@@ -44,7 +45,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <WagmiConfig client={client}>
     <ConnectKitProvider>
-      <App />
+      <DataProvider>
+        <App />
+      </DataProvider>
     </ConnectKitProvider>
   </WagmiConfig>
 );

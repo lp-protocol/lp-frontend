@@ -22,15 +22,15 @@ import { useCountDown } from "../../utils/useCountDown";
 import BigNumber from "bignumber.js";
 
 export function MintBox() {
+  const { chain } = useNetwork();
   const { isConnected, address } = useAccount();
   const [amount, updateAmount] = useState("");
   const bnAmount = new BigNumber(amount || "0");
 
-  const provider = useProvider({ chainId: chain.goerli.id });
-  const { data: signer } = useSigner({ chainId: chain.goerli.id });
-
+  const provider = useProvider({ chainId: chain?.id });
+  const { data: signer } = useSigner({ chainId: chain?.id });
   const contractRead = useContract({
-    address: "0x15b6403fd788e4b84844d98ca19f0cb81f67cb69",
+    address: process.env.REACT_APP_LP_CONTRACT,
     abi,
     signerOrProvider: provider,
   });
@@ -42,7 +42,7 @@ export function MintBox() {
     data?.currentMintPrice && !bnAmount.isNaN() && bnAmount.gt(0)
   );
   const { config, isError } = usePrepareContractWrite({
-    address: "0x15b6403fd788e4b84844d98ca19f0cb81f67cb69",
+    address: process.env.REACT_APP_LP_CONTRACT,
     abi,
     functionName: "mint",
     enabled,
@@ -56,7 +56,7 @@ export function MintBox() {
 
   let gasLimit = new BigNumber(config?.request?.gasLimit.toString() ?? "0");
   gasLimit = gasLimit.plus(gasLimit.times(0.25));
-  console.log(gasLimit.toFixed());
+
   const {
     data: mintTxData,
     isLoading,
@@ -83,6 +83,7 @@ export function MintBox() {
       const startTime = await contractRead?.startTime();
       const endTime = await contractRead?.endTime();
       const currentMintPrice = await contractRead?.getCurrentMintPrice();
+
       updateHasStarted(
         ethers.BigNumber.from(currentBlockTimeStamp).gte(startTime)
       );

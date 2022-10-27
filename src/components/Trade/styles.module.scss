@@ -1,0 +1,42 @@
+.tradeRow {
+  display: grid;
+  position: relative;
+  padding: 0.5rem;
+  border: 1px solid var(--color-3);
+  grid-template-columns: repeat(3, 1fr);
+  & > * {
+    align-self: center;
+  }
+  & img {
+    width: 60px;
+    &:hover + .lgImg {
+      display: block;
+    }
+  }
+
+  & .lgImg {
+    width: 250px;
+    display: none;
+    position: absolute;
+    &:hover {
+      display: block;
+    }
+  }
+}
+
+.tabWrap {
+  display: flex;
+  border: 1px solid var(--color-4);
+  :global {
+    p.active {
+      background: var(--color-4);
+      color: var(--color-1);
+    }
+  }
+
+  & p {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+  }
+}

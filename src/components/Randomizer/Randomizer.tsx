@@ -21,7 +21,7 @@ export function Randomizer() {
   React.useEffect(() => {
     const t = setTimeout(() => {
       updateFlipper(!flipper);
-    }, 250);
+    }, 450);
     return () => {
       clearTimeout(t);
     };
@@ -147,7 +147,7 @@ export function Randomizer() {
   }, [generator]);
 
   return (
-    <div style={{ borderRadius: "12px", overflow: "hidden" }}>
+    <div style={{ overflow: "hidden" }}>
       <canvas
         onClick={() => {
           updateFlipper(!flipper);
