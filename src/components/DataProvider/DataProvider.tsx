@@ -18,30 +18,30 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     const fn = async () => {
-      console.log(`${isConnected}, IS CONNECTED`);
+      let ownedTokens;
       if (isConnected) {
-        const ownedTokens = await contractRead?.tokensOfOwner(address);
-        const tokensForSale = await contractRead?.tokensOfOwner(
-          process.env.REACT_APP_LP_CONTRACT
-        );
-        const buyPrice = await contractRead?.getBuyPrice();
-        const sellPrice = await contractRead?.getSellPrice();
-        const lockedIn = await contractRead?.lockedIn();
-        updateData({
-          ownedTokens,
-          tokensForSale,
-          buyPrice,
-          sellPrice,
-          lockedIn,
-        });
+        ownedTokens = await contractRead?.tokensOfOwner(address);
       }
+
+      const tokensForSale = await contractRead?.tokensOfOwner(
+        process.env.REACT_APP_LP_CONTRACT
+      );
+      const buyPrice = await contractRead?.getBuyPrice();
+      const sellPrice = await contractRead?.getSellPrice();
+      const lockedIn = await contractRead?.lockedIn();
+      updateData({
+        ownedTokens,
+        tokensForSale,
+        buyPrice,
+        sellPrice,
+        lockedIn,
+      });
     };
 
     fn();
   }, [isConnected, address, contractRead]);
-  console.log(data);
   return (
-    <DataProviderContext.Provider value={data}>
+    <DataProviderContext.Provider value={{ ...data, updateData, contractRead }}>
       {children}
     </DataProviderContext.Provider>
   );

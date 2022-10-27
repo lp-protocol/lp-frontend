@@ -6,8 +6,19 @@ import { BigNumber } from "bignumber.js";
 import { useLpContractRead } from "../../utils/useLpContractRead";
 import tradestyles from "./styles.module.scss";
 import { Button } from "../Button/Button";
+import { useSell } from "../../utils/useSell";
+import {
+  ConnectButton,
+  ConnectButtonBase,
+} from "../ConnectButton/ConnectButton";
+import { useAccount } from "wagmi";
 
-type Token = { name: string; image: string; description: string };
+type Token = {
+  tokenId: string;
+  name: string;
+  image: string;
+  description: string;
+};
 
 let metadataCache: {
   [tokenId: string]: Token;
@@ -15,10 +26,43 @@ let metadataCache: {
 
 const LS_KEY = "__LP_METADATA_CACHE__";
 
+const SellRow = ({ token }: { token: Token }) => {
+  const { updateData, contractRead } = useContext(DataProviderContext);
+  const { address } = useAccount();
+
+  const { write, isLoading, isSuccess } = useSell(token.tokenId, {
+    onSettled: async () => {
+      const ownedTokens = await contractRead?.tokensOfOwner(address);
+      console.log(ownedTokens);
+      updateData((d: any) => ({
+        ...d,
+        ownedTokens,
+      }));
+    },
+  });
+  return (
+    <div className={`${tradestyles.sellRow} ${tradestyles.tradeRow}`}>
+      <img src={token.image} />
+      <img className={tradestyles.lgImg} src={token.image} />
+      <p className="type-1 color-3">{token.name}</p>
+      <Button
+        onClick={write}
+        style={{ width: "100px", justifySelf: "flex-end" }}
+      >
+        Sell
+      </Button>
+      <Button style={{ justifySelf: "flex-end" }}>Claim Fee</Button>
+    </div>
+  );
+};
+
 export function Trade() {
   const { tokensForSale, ownedTokens, buyPrice, sellPrice } =
     useContext(DataProviderContext);
-  const [tokens, updateTokens] = useState<null | Token[]>(null);
+  const [tokens, updateTokens] = useState<undefined | Token[]>(undefined);
+  const [ownedTokensWithDetail, updateOwnedTokens] = useState<
+    undefined | Token[]
+  >(undefined);
   const lpContractRead = useLpContractRead();
   React.useEffect(() => {
     try {
@@ -28,34 +72,37 @@ export function Trade() {
       }
     } catch {}
     const fn = async () => {
-      const all = await Promise.all(
-        tokensForSale?.map((token: BigNumber) => {
-          const _fn = async () => {
-            const tokenId = token.toString();
-            console.log("TOKEN ID:", tokenId);
-            if (metadataCache[tokenId]) {
-              return metadataCache[tokenId];
-            }
-            let uri = await lpContractRead?.tokenURI(tokenId);
-            [, uri] = uri.split("base64,");
-            const metadata = JSON.parse(atob(uri));
-            metadataCache[tokenId] = metadata;
-            return metadata;
-          };
-          return _fn();
-        })
-      );
+      const cb = (token: BigNumber) => {
+        const _fn = async () => {
+          const tokenId = token.toString();
+          console.log("TOKEN ID:", tokenId);
+          if (metadataCache[tokenId]) {
+            return metadataCache[tokenId];
+          }
+          let uri = await lpContractRead?.tokenURI(tokenId);
+          [, uri] = uri.split("base64,");
+          const metadata = { ...JSON.parse(atob(uri)), tokenId };
+          metadataCache[tokenId] = metadata;
+          return metadata;
+        };
+        return _fn();
+      };
+      const forSale = await Promise.all(tokensForSale?.map(cb));
+      const owned = ownedTokens
+        ? await Promise.all(ownedTokens?.map(cb))
+        : void 0;
 
       try {
         window.localStorage.setItem(LS_KEY, JSON.stringify(metadataCache));
       } catch {}
-      return all;
+      return [forSale, owned];
     };
 
-    fn().then((t) => {
-      updateTokens(t);
+    fn().then(([forSale, owned]) => {
+      updateTokens(forSale);
+      updateOwnedTokens(owned);
     });
-  }, [tokensForSale]);
+  }, [tokensForSale, ownedTokens, lpContractRead]);
 
   const [tab, updateTab] = useState<"LISTINGS" | "WALLET">("LISTINGS");
 
@@ -90,6 +137,47 @@ export function Trade() {
               Your NFTs
             </p>
           </div>
+
+          {tab === "WALLET" && (
+            <>
+              <div>
+                <p className="color-1 type-1">
+                  <>
+                    Sell Price{" "}
+                    {new BigNumber(sellPrice?.toString())
+                      .div(10 ** 18)
+                      .toFixed()}{" "}
+                    ETH
+                  </>
+                </p>
+              </div>
+              <ConnectButtonBase>
+                {({
+                  isConnected,
+                  isConnecting,
+                  show,
+                  hide,
+                  address,
+                  ensName,
+                }) => {
+                  return (
+                    <>
+                      {!isConnected && (
+                        <Button onClick={show}>Connect wallet</Button>
+                      )}
+                      {isConnected && (
+                        <>
+                          {ownedTokensWithDetail?.map((token) => (
+                            <SellRow token={token} />
+                          ))}
+                        </>
+                      )}
+                    </>
+                  );
+                }}
+              </ConnectButtonBase>
+            </>
+          )}
 
           {tab === "LISTINGS" && (
             <>

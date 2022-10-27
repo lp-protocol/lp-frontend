@@ -15,7 +15,7 @@ export function ConnectButton({ className }: { className?: any }) {
     address,
   });
   return (
-    <ConnectKitButton.Custom>
+    <ConnectButtonBase>
       {({ isConnected, isConnecting, show, hide, address, ensName }) => {
         return (
           <>
@@ -27,6 +27,27 @@ export function ConnectButton({ className }: { className?: any }) {
             )}
           </>
         );
+      }}
+    </ConnectButtonBase>
+  );
+}
+
+export function ConnectButtonBase({
+  className,
+  children,
+}: {
+  className?: any;
+  children: (params: any) => React.ReactNode;
+}) {
+  const { address } = useAccount();
+
+  const { data, isError, isLoading } = useEnsName({
+    address,
+  });
+  return (
+    <ConnectKitButton.Custom>
+      {(params) => {
+        return children(params);
       }}
     </ConnectKitButton.Custom>
   );

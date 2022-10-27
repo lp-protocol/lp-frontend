@@ -18,10 +18,15 @@
     width: 250px;
     display: none;
     position: absolute;
+    z-index: 10;
     &:hover {
       display: block;
     }
   }
+}
+
+.sellRow {
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .tabWrap {
