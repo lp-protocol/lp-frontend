@@ -99,9 +99,9 @@ function App() {
             style={{ fontWeight: "normal", textAlign: "justify" }}
             className="type-1 color-2"
           >
-            A new model for NFT sales that solves the NFT liquidity issue by
-            using mint proceeds to bootstrap liquidity, provides instant
-            buy/sell functionality, and rewards holders.
+            A new model to empower NFT creators that solves the NFT liquidity
+            issue by using mint proceeds to bootstrap liquidity, provides
+            instant buy/sell functionality, and rewards holders.
           </h2>
         </div>
       </div>
@@ -154,8 +154,8 @@ function App() {
             <div className="spacer">
               <h2 className="type-2 color-3">Trustless Escrow</h2>
               <p className="type-1 color-2">
-                Funds and NFTs are held in trustless escrow for no more than 33
-                days. If the project doesn't sell out in 33 days the experiment
+                Funds and NFTs are held in trustless escrow for no more than 12
+                days. If the project doesn't sell out in 12 days the experiment
                 ends and you can withdraw your ETH (minus gas fees).
               </p>
 
@@ -169,7 +169,7 @@ function App() {
               <h2 className="type-2 color-3">Instant Liquidity</h2>
               <p className="type-1 color-2">
                 Half of mint proceeds and all external royalties are used to
-                fuel instant NFT liquidity. After the first 9k LP NFTs are
+                create instant NFT liquidity. After the first 9k LP NFTs are
                 minted an additional 1,000 are minted to provide liquidity for
                 instant buys and sells. Marketplace functionality is built
                 directly into the LP smart contract.
@@ -204,14 +204,14 @@ function App() {
               <div>
                 <h2 className="type-2 color-3">Scenario 1</h2>
                 <p className="type-1 color-1">
-                  First 9k LP NFTs are minted within 33 days
+                  First 9k LP NFTs are minted within 12 days
                 </p>
               </div>
               <p className="type-1 color-2">
                 At this point the second phase of the experiment begins. Your
                 NFTs are unlocked. Buying, selling, and transferring can now
                 occur. Until this happens ETH and minted NFTs cannot be
-                transferred.
+                transferred, or sold.
               </p>
             </div>
           </Grid>
@@ -221,7 +221,7 @@ function App() {
               <div>
                 <h2 className="type-2 color-3">Scenario 2</h2>
                 <p className="type-1 color-1">
-                  First 9k LP NFTs are NOT minted within 33 days
+                  First 9k LP NFTs are NOT minted within 12 days
                 </p>
               </div>
               <p className="type-1 color-2">
@@ -239,6 +239,13 @@ function App() {
         className="wrap"
       >
         <div className="spacer">
+          <p className="type-1 color-2">
+            The underlying LP smart contracts, The LP Protocol, give the power
+            back to NFT creators. By owning the liquidity, fees, and listings
+            projects are no longer at the mercy of the rules of centralized
+            marketplaces. It is our hope that we as a community will build upon
+            this protocol and that new NFT projects will adopt it.
+          </p>
           <h2 id="trustless-escrow" className="type-1 color-1">
             Trustless Escrow
           </h2>
@@ -252,9 +259,9 @@ function App() {
             the bag.
           </p>
           <p className="type-1 color-2">
-            The escrow period ends after the first 9k are minted, or after 33
+            The escrow period ends after the first 9k are minted, or after 12
             days - whichever comes first. If the initial 9,000 LP NFTs are not
-            minted within 33 days then The LP considers the project a failure
+            minted within 12 days then The LP considers the project a failure
             and it is scrapped. You'll be able to withdraw your funds from the
             smart contract (minus gas fees).
           </p>
@@ -279,31 +286,30 @@ function App() {
             is determined by the amount of ETH in the pool.
             <br />
             <br />
-            <span className="color-3">
-              Total ETH / Total Circulating Supply = Instant sell price.
-            </span>
-            <br />
-            <br />
-            <span className="color-3">
-              Total Circulating Supply = Total Supply - LP NFTs held in smart
-              contract
-            </span>
           </p>
-          <p className="type-1 color-2">
-            LP NFTs that are sold at the instant sell price become available to
-            buy from the smart contract. The price to buy any LP NFT in the
-            smart contract will be the instant sell price plus 10%. Half of the
-            10% fee will be added to the ETH pool within the LP smart contract
-            and the other half will go to the holders of the LP NFTs.
+          <p className="color-3 type-1">• A = The amount of ETH in the pool</p>
+          <p className="color-3 type-1">
+            • B = Number of NFTs owned by various people
           </p>
+          <p className="color-3 type-1">• T = Total supply of NFTs</p>
+          <p className="color-3 type-1">
+            • T-B = Number of NFTs in liquidity pool
+          </p>
+          <p className="color-3 type-1">
+            • K = (A)*(T-B) = Our constant product (changes due to accumulating
+            fees)
+          </p>
+          <p className="color-3 type-1">• Price = A/(T-B)</p>
+
           <h2 id="fees" className="type-1 color-1">
             Holders Collect Fees
           </h2>
 
           <p className="type-1 color-2">
             Each LP NFT you own can be used to withdraw its pro-rata share of
-            the earned fees. Any LP NFT that's purchased from the LP smart
-            contract will earn a fee. All fees can be claimed by LP holders.
+            the earned fees. Any LP NFT that's purchased or sold from the LP
+            smart contract will earn a fee. All fees can be claimed by LP
+            holders.
           </p>
           <h2 id="fees" className="type-1 color-1">
             100% On-Chain
@@ -322,7 +328,7 @@ function App() {
             <br />
             <br />A note about the Safari Browser: Safari does not fully support
             the method used to render the on-chain image. It shows blurry at
-            anything above 40x40px. If for some reason you are required to
+            anything above 40px x 40px. If for some reason you are required to
             render your LP NFT image in Safari you can use a fallback canvas
             method, which we are using for the above preview images, to render a
             crisp image.

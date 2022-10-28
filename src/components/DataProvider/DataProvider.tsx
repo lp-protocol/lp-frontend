@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { chain, useAccount, useContract, useNetwork, useProvider } from "wagmi";
 import abi from "../../assets/lpabi.json";
 
@@ -16,32 +16,47 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   const [data, updateData] = useState<any>({});
 
+  const getAllTokens = useCallback(async () => {
+    let ownedTokens: any;
+    if (isConnected) {
+      ownedTokens = await contractRead?.tokensOfOwner(address);
+    }
+
+    const tokensForSale = await contractRead?.tokensOfOwner(
+      process.env.REACT_APP_LP_CONTRACT
+    );
+
+    console.log(tokensForSale, ownedTokens);
+
+    updateData((d: any) => ({
+      ...d,
+      ownedTokens,
+      tokensForSale,
+    }));
+
+    return { tokensForSale, ownedTokens };
+  }, [contractRead, address, isConnected]);
+
+  const getAllData = useCallback(async () => {
+    const buyPrice = await contractRead?.getBuyPrice();
+    const sellPrice = await contractRead?.getSellPrice();
+    const lockedIn = await contractRead?.lockedIn();
+    await getAllTokens();
+    updateData((d: any) => ({
+      ...d,
+      buyPrice,
+      sellPrice,
+      lockedIn,
+    }));
+  }, [contractRead, getAllTokens]);
+
   React.useEffect(() => {
-    const fn = async () => {
-      let ownedTokens;
-      if (isConnected) {
-        ownedTokens = await contractRead?.tokensOfOwner(address);
-      }
-
-      const tokensForSale = await contractRead?.tokensOfOwner(
-        process.env.REACT_APP_LP_CONTRACT
-      );
-      const buyPrice = await contractRead?.getBuyPrice();
-      const sellPrice = await contractRead?.getSellPrice();
-      const lockedIn = await contractRead?.lockedIn();
-      updateData({
-        ownedTokens,
-        tokensForSale,
-        buyPrice,
-        sellPrice,
-        lockedIn,
-      });
-    };
-
-    fn();
-  }, [isConnected, address, contractRead]);
+    getAllData();
+  }, [getAllData]);
   return (
-    <DataProviderContext.Provider value={{ ...data, updateData, contractRead }}>
+    <DataProviderContext.Provider
+      value={{ ...data, updateData, getAllData, getAllTokens, contractRead }}
+    >
       {children}
     </DataProviderContext.Provider>
   );

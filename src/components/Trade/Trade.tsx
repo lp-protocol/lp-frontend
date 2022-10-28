@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ethDiamond from "../../assets/eth-diamond.png";
 import styles from "../../App.module.scss";
 import { DataProviderContext } from "../DataProvider/DataProvider";
@@ -6,14 +6,18 @@ import { BigNumber } from "bignumber.js";
 import { useLpContractRead } from "../../utils/useLpContractRead";
 import tradestyles from "./styles.module.scss";
 import { Button } from "../Button/Button";
+// @ts-ignore
+import { FixedSizeList as List } from "react-window";
 import { useSell } from "../../utils/useSell";
 import {
   ConnectButton,
   ConnectButtonBase,
 } from "../ConnectButton/ConnectButton";
-import { useAccount } from "wagmi";
+import { useAccount, useWaitForTransaction } from "wagmi";
+import { BuyRow } from "./BuyRow";
+import { SellRow } from "./SellRow";
 
-type Token = {
+export type Token = {
   tokenId: string;
   name: string;
   image: string;
@@ -26,40 +30,11 @@ let metadataCache: {
 
 const LS_KEY = "__LP_METADATA_CACHE__";
 
-const SellRow = ({ token }: { token: Token }) => {
-  const { updateData, contractRead } = useContext(DataProviderContext);
-  const { address } = useAccount();
-
-  const { write, isLoading, isSuccess } = useSell(token.tokenId, {
-    onSettled: async () => {
-      const ownedTokens = await contractRead?.tokensOfOwner(address);
-      console.log(ownedTokens);
-      updateData((d: any) => ({
-        ...d,
-        ownedTokens,
-      }));
-    },
-  });
-  return (
-    <div className={`${tradestyles.sellRow} ${tradestyles.tradeRow}`}>
-      <img src={token.image} />
-      <img className={tradestyles.lgImg} src={token.image} />
-      <p className="type-1 color-3">{token.name}</p>
-      <Button
-        onClick={write}
-        style={{ width: "100px", justifySelf: "flex-end" }}
-      >
-        Sell
-      </Button>
-      <Button style={{ justifySelf: "flex-end" }}>Claim Fee</Button>
-    </div>
-  );
-};
-
 export function Trade() {
   const { tokensForSale, ownedTokens, buyPrice, sellPrice } =
     useContext(DataProviderContext);
   const [tokens, updateTokens] = useState<undefined | Token[]>(undefined);
+  const [loading, updateLoading] = useState(true);
   const [ownedTokensWithDetail, updateOwnedTokens] = useState<
     undefined | Token[]
   >(undefined);
@@ -75,7 +50,6 @@ export function Trade() {
       const cb = (token: BigNumber) => {
         const _fn = async () => {
           const tokenId = token.toString();
-          console.log("TOKEN ID:", tokenId);
           if (metadataCache[tokenId]) {
             return metadataCache[tokenId];
           }
@@ -87,7 +61,9 @@ export function Trade() {
         };
         return _fn();
       };
-      const forSale = await Promise.all(tokensForSale?.map(cb));
+      const forSale = tokensForSale
+        ? await Promise.all(tokensForSale?.map(cb))
+        : void 0;
       const owned = ownedTokens
         ? await Promise.all(ownedTokens?.map(cb))
         : void 0;
@@ -101,6 +77,7 @@ export function Trade() {
     fn().then(([forSale, owned]) => {
       updateTokens(forSale);
       updateOwnedTokens(owned);
+      updateLoading(false);
     });
   }, [tokensForSale, ownedTokens, lpContractRead]);
 
@@ -138,6 +115,12 @@ export function Trade() {
             </p>
           </div>
 
+          {loading && (
+            <p className="color-1 type-2">
+              Loading on-chain data...This may take a moment
+            </p>
+          )}
+
           {tab === "WALLET" && (
             <>
               <div>
@@ -167,9 +150,22 @@ export function Trade() {
                       )}
                       {isConnected && (
                         <>
-                          {ownedTokensWithDetail?.map((token) => (
-                            <SellRow token={token} />
-                          ))}
+                          <List
+                            height={800}
+                            itemCount={ownedTokensWithDetail?.length ?? 0}
+                            itemSize={70}
+                            width={"100%"}
+                          >
+                            {({ index, style }: any) => (
+                              <div style={style}>
+                                {ownedTokensWithDetail?.[index] && (
+                                  <SellRow
+                                    token={ownedTokensWithDetail[index]}
+                                  />
+                                )}
+                              </div>
+                            )}
+                          </List>
                         </>
                       )}
                     </>
@@ -201,17 +197,21 @@ export function Trade() {
                   </p>
                 </div>
               )}
-              {!tokens && <p>Loading...</p>}
-              {tokens?.map((token) => (
-                <div className={tradestyles.tradeRow}>
-                  <img src={token.image} />
-                  <img className={tradestyles.lgImg} src={token.image} />
-                  <p className="type-1 color-3">{token.name}</p>
-                  <Button style={{ width: "100px", justifySelf: "flex-end" }}>
-                    Buy
-                  </Button>
-                </div>
-              ))}
+
+              <List
+                height={800}
+                itemCount={tokens?.length ?? 0}
+                itemSize={70}
+                width={"100%"}
+              >
+                {({ index, style }: any) => (
+                  <div style={style}>
+                    {tokens?.[index] && (
+                      <BuyRow buyPrice={buyPrice?.[0]} token={tokens[index]} />
+                    )}
+                  </div>
+                )}
+              </List>
             </>
           )}
         </div>
