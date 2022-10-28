@@ -1,13 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { memo, useContext, useEffect, useMemo, useState } from "react";
 import ethDiamond from "../../assets/eth-diamond.png";
 import styles from "../../App.module.scss";
-import { DataProviderContext } from "../DataProvider/DataProvider";
+import {
+  DataProviderContext,
+  RawToken,
+  Tokens,
+} from "../DataProvider/DataProvider";
 import { BigNumber } from "bignumber.js";
 import { useLpContractRead } from "../../utils/useLpContractRead";
 import tradestyles from "./styles.module.scss";
 import { Button } from "../Button/Button";
 // @ts-ignore
-import { FixedSizeList as List } from "react-window";
+import { areEqual, FixedSizeList as List } from "react-window";
 import { useSell } from "../../utils/useSell";
 import {
   ConnectButton,
@@ -30,14 +34,42 @@ let metadataCache: {
 
 const LS_KEY = "__LP_METADATA_CACHE__";
 
+const SellRowListItem = memo(({ index, style, data }: any) => (
+  <div key={data.ownedKeys[index].tokenId} style={style}>
+    {data.ownedTokensWithDetail?.[data.ownedKeys[index]] && (
+      <SellRow token={data.ownedTokensWithDetail[data.ownedKeys[index]]} />
+    )}
+  </div>
+));
+
+const BuyRowListItem = memo(
+  ({ index, style, data }: any) => (
+    <div key={data.listingKeys[index].tokenId} style={style}>
+      {data.tokens?.[data.listingKeys[index]] && (
+        <BuyRow
+          updateTokens={data.updateTokens}
+          buyPrice={data.buyPrice}
+          token={data.tokens[data.listingKeys[index]]}
+        />
+      )}
+    </div>
+  ),
+  (prev, next) =>
+    prev.data.tokens?.[prev.data.listingKeys[prev.index]].image ===
+    next.data.tokens?.[next.data.listingKeys[next.index]].image
+);
+
+const wait = () =>
+  new Promise((resolve) => setTimeout(() => resolve(void 0), 250));
+
 export function Trade() {
   const { tokensForSale, ownedTokens, buyPrice, sellPrice } =
     useContext(DataProviderContext);
-  const [tokens, updateTokens] = useState<undefined | Token[]>(undefined);
+  const [tokens, updateTokens] = useState<undefined | Tokens>(tokensForSale);
   const [loading, updateLoading] = useState(true);
   const [ownedTokensWithDetail, updateOwnedTokens] = useState<
-    undefined | Token[]
-  >(undefined);
+    undefined | Tokens
+  >(ownedTokens);
   const lpContractRead = useLpContractRead();
   React.useEffect(() => {
     try {
@@ -46,37 +78,81 @@ export function Trade() {
         metadataCache = JSON.parse(cache);
       }
     } catch {}
-    const fn = async () => {
-      const cb = (token: BigNumber) => {
-        const _fn = async () => {
-          const tokenId = token.toString();
-          if (metadataCache[tokenId]) {
-            return metadataCache[tokenId];
-          }
-          let uri = await lpContractRead?.tokenURI(tokenId);
-          [, uri] = uri.split("base64,");
-          const metadata = { ...JSON.parse(atob(uri)), tokenId };
-          metadataCache[tokenId] = metadata;
-          return metadata;
-        };
-        return _fn();
-      };
-      const forSale = tokensForSale
-        ? await Promise.all(tokensForSale?.map(cb))
-        : void 0;
-      const owned = ownedTokens
-        ? await Promise.all(ownedTokens?.map(cb))
-        : void 0;
 
-      try {
-        window.localStorage.setItem(LS_KEY, JSON.stringify(metadataCache));
-      } catch {}
-      return [forSale, owned];
+    const getMetadata = async (tokenId: string): Promise<RawToken> => {
+      if (metadataCache[tokenId]) {
+        return metadataCache[tokenId];
+      }
+      let uri = await lpContractRead?.tokenURI(tokenId);
+      [, uri] = uri.split("base64,");
+      const metadata = { ...JSON.parse(atob(uri)), tokenId };
+      metadataCache[tokenId] = metadata;
+      return metadata;
     };
 
-    fn().then(([forSale, owned]) => {
-      updateTokens(forSale);
-      updateOwnedTokens(owned);
+    const loadTokensForSale = async () => {
+      if (tokensForSale) {
+        let p = [];
+        const loadP = async (p: any) => {
+          const out = await Promise.all(p);
+          updateTokens((all) =>
+            out.reduce(
+              (a, token) => {
+                a[token.tokenId] = token;
+                return a;
+              },
+              { ...all }
+            )
+          );
+        };
+        const keys = Object.keys(tokensForSale);
+        for (let i = 0; i < keys.length; i++) {
+          const tokenId = tokensForSale[keys[i]].tokenId;
+          p.push(getMetadata(tokenId));
+          if (p.length === 10) {
+            await loadP(p);
+            p = [];
+          }
+        }
+
+        if (p.length) {
+          loadP(p);
+        }
+      }
+    };
+
+    const loadOwnedTokens = async () => {
+      if (ownedTokens) {
+        let p = [];
+        const loadP = async (p: any) => {
+          const out = await Promise.all(p);
+          updateOwnedTokens((all) =>
+            out.reduce(
+              (a, token) => {
+                a[token.tokenId] = token;
+                return a;
+              },
+              { ...all }
+            )
+          );
+        };
+        const keys = Object.keys(ownedTokens);
+        for (let i = 0; i < keys.length; i++) {
+          const tokenId = ownedTokens[keys[i]].tokenId;
+          p.push(getMetadata(tokenId));
+          if (p.length === 10) {
+            await loadP(p);
+            p = [];
+          }
+        }
+
+        if (p.length) {
+          loadP(p);
+        }
+      }
+    };
+
+    Promise.all([loadTokensForSale(), loadOwnedTokens()]).then(() => {
       updateLoading(false);
     });
   }, [tokensForSale, ownedTokens, lpContractRead]);
@@ -88,6 +164,25 @@ export function Trade() {
       updateTab(e.target.dataset?.tab);
     }
   };
+
+  const listingKeys = useMemo(() => Object.keys(tokens ?? {}), [tokens]);
+  const ownedKeys = useMemo(
+    () => Object.keys(ownedTokens ?? {}),
+    [ownedTokens]
+  );
+
+  const listData = useMemo(
+    () => ({
+      tokens,
+      listingKeys,
+      buyPrice,
+      updateTokens,
+      updateOwnedTokens,
+      ownedKeys,
+      ownedTokensWithDetail,
+    }),
+    [tokens, listingKeys, buyPrice, ownedKeys, ownedTokensWithDetail]
+  );
   return (
     <>
       <div
@@ -96,7 +191,7 @@ export function Trade() {
           maxWidth: "800px",
           marginLeft: "auto",
           marginRight: "auto",
-          marginBottom: "500px",
+          marginBottom: "200px",
         }}
       >
         <div className="spacer">
@@ -115,22 +210,13 @@ export function Trade() {
             </p>
           </div>
 
-          {loading && (
-            <p className="color-1 type-2">
-              Loading on-chain data...This may take a moment
-            </p>
-          )}
-
           {tab === "WALLET" && (
             <>
               <div>
                 <p className="color-1 type-1">
                   <>
                     Sell Price{" "}
-                    {new BigNumber(sellPrice?.toString())
-                      .div(10 ** 18)
-                      .toFixed()}{" "}
-                    ETH
+                    {new BigNumber(sellPrice ?? 0).div(10 ** 18).toFixed()} ETH
                   </>
                 </p>
               </div>
@@ -150,22 +236,19 @@ export function Trade() {
                       )}
                       {isConnected && (
                         <>
-                          <List
-                            height={800}
-                            itemCount={ownedTokensWithDetail?.length ?? 0}
-                            itemSize={70}
-                            width={"100%"}
-                          >
-                            {({ index, style }: any) => (
-                              <div style={style}>
-                                {ownedTokensWithDetail?.[index] && (
-                                  <SellRow
-                                    token={ownedTokensWithDetail[index]}
-                                  />
-                                )}
-                              </div>
-                            )}
-                          </List>
+                          {ownedKeys.length > 0 && (
+                            <div className={tradestyles.listWrap}>
+                              <List
+                                height={800}
+                                itemCount={ownedKeys.length}
+                                itemSize={70}
+                                width={"100%"}
+                                itemData={listData}
+                              >
+                                {SellRowListItem}
+                              </List>
+                            </div>
+                          )}
                         </>
                       )}
                     </>
@@ -182,10 +265,7 @@ export function Trade() {
                   <p className="color-1 type-1">
                     <>
                       Buy Price{" "}
-                      {new BigNumber(buyPrice?.[0].toString())
-                        .div(10 ** 18)
-                        .toFixed()}{" "}
-                      ETH
+                      {new BigNumber(buyPrice ?? 0).div(10 ** 18).toFixed()} ETH
                     </>
                   </p>
                   <p
@@ -198,20 +278,19 @@ export function Trade() {
                 </div>
               )}
 
-              <List
-                height={800}
-                itemCount={tokens?.length ?? 0}
-                itemSize={70}
-                width={"100%"}
-              >
-                {({ index, style }: any) => (
-                  <div style={style}>
-                    {tokens?.[index] && (
-                      <BuyRow buyPrice={buyPrice?.[0]} token={tokens[index]} />
-                    )}
-                  </div>
-                )}
-              </List>
+              {listingKeys.length > 0 && (
+                <div className={tradestyles.listWrap}>
+                  <List
+                    height={800}
+                    itemCount={listingKeys.length}
+                    itemSize={70}
+                    itemData={listData}
+                    width={"100%"}
+                  >
+                    {BuyRowListItem}
+                  </List>
+                </div>
+              )}
             </>
           )}
         </div>

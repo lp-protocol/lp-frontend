@@ -2,27 +2,25 @@
   display: grid;
   position: relative;
   padding: 0.5rem;
-  border: 1px solid var(--color-3);
+  border-bottom: 1px solid var(--color-3);
   grid-template-columns: repeat(3, 1fr);
+  cursor: pointer;
   & > * {
     align-self: center;
   }
-  & img {
+  & img,
+  .loading {
     width: 60px;
-    &:hover + .lgImg {
-      display: block;
-    }
   }
+}
 
-  & .lgImg {
-    width: 250px;
-    display: none;
-    position: absolute;
-    z-index: 10;
-    &:hover {
-      display: block;
-    }
-  }
+.lgImg {
+  width: 100vw;
+  max-width: 500px;
+}
+
+.listWrap {
+  border: 1px solid var(--color-3);
 }
 
 .sellRow {
@@ -44,4 +42,8 @@
     text-align: center;
     cursor: pointer;
   }
+}
+
+.modalPaper {
+  background-color: #000000 !important;
 }

@@ -3,7 +3,7 @@ import styles from "./styles.module.scss";
 
 type ButtonProps = {
   children: React.ReactNode;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   style?: React.CSSProperties;
   disabled?: boolean;
 };

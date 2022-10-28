@@ -1,8 +1,44 @@
+import { BigNumber } from "ethers";
 import React, { useCallback, useState } from "react";
 import { chain, useAccount, useContract, useNetwork, useProvider } from "wagmi";
 import abi from "../../assets/lpabi.json";
 
-export const DataProviderContext = React.createContext<any>({});
+export type RawToken = {
+  tokenId: string;
+  name: string;
+  image: string;
+  description: string;
+};
+
+export type Tokens = {
+  [tokenId: string]: RawToken;
+};
+
+type Data = {
+  ownedTokens?: Tokens;
+  tokensForSale?: Tokens;
+  buyPrice?: string;
+  sellPrice?: string;
+  getAllData?: () => Promise<void>;
+  lockedIn?: boolean;
+};
+
+export const DataProviderContext = React.createContext<Data>({});
+
+const tokenCb = (t: BigNumber): RawToken => {
+  const id = t.toString();
+  return {
+    tokenId: id,
+    name: `The LP #${id}`,
+    image: "",
+    description: "",
+  };
+};
+
+const tokenReduce = (a: Tokens, token: RawToken) => {
+  a[token.tokenId] = token;
+  return a;
+};
 
 export function DataProvider({ children }: { children: React.ReactNode }) {
   const { chain } = useNetwork();
@@ -19,14 +55,16 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const getAllTokens = useCallback(async () => {
     let ownedTokens: any;
     if (isConnected) {
-      ownedTokens = await contractRead?.tokensOfOwner(address);
+      ownedTokens = (await contractRead?.tokensOfOwner(address))
+        .map(tokenCb)
+        .reduce(tokenReduce, {});
     }
 
-    const tokensForSale = await contractRead?.tokensOfOwner(
-      process.env.REACT_APP_LP_CONTRACT
-    );
-
-    console.log(tokensForSale, ownedTokens);
+    const tokensForSale = (
+      await contractRead?.tokensOfOwner(process.env.REACT_APP_LP_CONTRACT)
+    )
+      .map(tokenCb)
+      .reduce(tokenReduce, {});
 
     updateData((d: any) => ({
       ...d,
@@ -39,12 +77,12 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   const getAllData = useCallback(async () => {
     const buyPrice = await contractRead?.getBuyPrice();
-    const sellPrice = await contractRead?.getSellPrice();
+    const sellPrice = (await contractRead?.getSellPrice()).toString();
     const lockedIn = await contractRead?.lockedIn();
     await getAllTokens();
     updateData((d: any) => ({
       ...d,
-      buyPrice,
+      buyPrice: buyPrice[0].toString(),
       sellPrice,
       lockedIn,
     }));
