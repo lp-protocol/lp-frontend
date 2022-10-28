@@ -37,7 +37,10 @@ const LS_KEY = "__LP_METADATA_CACHE__";
 const SellRowListItem = memo(({ index, style, data }: any) => (
   <div key={data.ownedKeys[index].tokenId} style={style}>
     {data.ownedTokensWithDetail?.[data.ownedKeys[index]] && (
-      <SellRow token={data.ownedTokensWithDetail[data.ownedKeys[index]]} />
+      <SellRow
+        updateTokens={data.updateOwnedTokens}
+        token={data.ownedTokensWithDetail[data.ownedKeys[index]]}
+      />
     )}
   </div>
 ));

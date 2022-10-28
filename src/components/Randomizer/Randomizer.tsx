@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { memo, useMemo, useRef, useState } from "react";
 import sprite from "./sprite";
 
 function* pseudoRandom(seed: number): Generator<number, number, number> {
@@ -10,7 +10,7 @@ function* pseudoRandom(seed: number): Generator<number, number, number> {
   }
 }
 
-export function Randomizer() {
+export const Randomizer = memo(function Randomizer() {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [flipper, updateFlipper] = useState(false);
   const generator = useMemo(
@@ -163,4 +163,4 @@ export function Randomizer() {
       />
     </div>
   );
-}
+});
