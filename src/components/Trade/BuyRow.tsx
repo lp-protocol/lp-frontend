@@ -114,5 +114,5 @@ export const BuyRow = React.memo(
       </div>
     );
   },
-  (prev, next) => prev.token.image === next.token.image
+  (prev, next) => prev.token?.image === next.token?.image
 );

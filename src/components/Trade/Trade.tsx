@@ -34,16 +34,21 @@ let metadataCache: {
 
 const LS_KEY = "__LP_METADATA_CACHE__";
 
-const SellRowListItem = memo(({ index, style, data }: any) => (
-  <div key={data.ownedKeys[index].tokenId} style={style}>
-    {data.ownedTokensWithDetail?.[data.ownedKeys[index]] && (
-      <SellRow
-        updateTokens={data.updateOwnedTokens}
-        token={data.ownedTokensWithDetail[data.ownedKeys[index]]}
-      />
-    )}
-  </div>
-));
+const SellRowListItem = memo(
+  ({ index, style, data }: any) => (
+    <div key={data.ownedKeys[index].tokenId} style={style}>
+      {data.ownedTokensWithDetail?.[data.ownedKeys[index]] && (
+        <SellRow
+          updateTokens={data.updateOwnedTokens}
+          token={data.ownedTokensWithDetail[data.ownedKeys[index]]}
+        />
+      )}
+    </div>
+  ),
+  (prev, next) =>
+    prev.data.ownedTokensWithDetail?.[prev.data.ownedKeys[prev.index]].image ===
+    next.data.ownedTokensWithDetail?.[next.data.ownedKeys[next.index]].image
+);
 
 const BuyRowListItem = memo(
   ({ index, style, data }: any) => (
@@ -62,14 +67,10 @@ const BuyRowListItem = memo(
     next.data.tokens?.[next.data.listingKeys[next.index]].image
 );
 
-const wait = () =>
-  new Promise((resolve) => setTimeout(() => resolve(void 0), 250));
-
 export function Trade() {
   const { tokensForSale, ownedTokens, buyPrice, sellPrice } =
     useContext(DataProviderContext);
   const [tokens, updateTokens] = useState<undefined | Tokens>(tokensForSale);
-  const [loading, updateLoading] = useState(true);
   const [ownedTokensWithDetail, updateOwnedTokens] = useState<
     undefined | Tokens
   >(ownedTokens);
@@ -155,9 +156,7 @@ export function Trade() {
       }
     };
 
-    Promise.all([loadTokensForSale(), loadOwnedTokens()]).then(() => {
-      updateLoading(false);
-    });
+    Promise.all([loadTokensForSale(), loadOwnedTokens()]).then(() => {});
   }, [tokensForSale, ownedTokens, lpContractRead]);
 
   const [tab, updateTab] = useState<"LISTINGS" | "WALLET">("LISTINGS");
