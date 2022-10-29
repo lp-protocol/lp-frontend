@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   useAccount,
   useContract,
@@ -10,6 +10,7 @@ import {
   useSigner,
   usePrepareContractWrite,
   useContractWrite,
+  useWaitForTransaction,
 } from "wagmi";
 import { Button } from "../Button/Button";
 import { ConnectButton } from "../ConnectButton/ConnectButton";
@@ -20,6 +21,14 @@ import abi from "../../assets/lpabi.json";
 import { ethers } from "ethers";
 import { useCountDown } from "../../utils/useCountDown";
 import BigNumber from "bignumber.js";
+import { DataProviderContext } from "../DataProvider/DataProvider";
+
+const wait = () =>
+  new Promise((resolve) =>
+    setTimeout(() => {
+      resolve(void 0);
+    }, 1000)
+  );
 
 export function MintBox() {
   const { chain } = useNetwork();
@@ -28,6 +37,7 @@ export function MintBox() {
   const bnAmount = new BigNumber(amount || "0");
 
   const provider = useProvider({ chainId: chain?.id });
+  const { totalMinted, getAllData } = useContext(DataProviderContext);
   const { data: signer } = useSigner({ chainId: chain?.id });
   const contractRead = useContract({
     address: process.env.REACT_APP_LP_CONTRACT,
@@ -41,6 +51,7 @@ export function MintBox() {
   const enabled = Boolean(
     data?.currentMintPrice && !bnAmount.isNaN() && bnAmount.gt(0)
   );
+
   const { config, isError } = usePrepareContractWrite({
     address: process.env.REACT_APP_LP_CONTRACT,
     abi,
@@ -71,35 +82,64 @@ export function MintBox() {
       : void 0,
     request: {
       ...config.request,
-      gasLimit: gasLimit.toFixed(),
+      gasLimit: gasLimit.toFixed(0),
     },
   } as any);
 
-  React.useEffect(() => {
-    const fn = async () => {
+  const [loading, updateLoading] = useState(true);
+
+  const getData = useCallback(
+    async (recurseStart?: boolean): Promise<any> => {
       const { timestamp: currentBlockTimeStamp } = await provider.getBlock(
         "latest"
       );
       const startTime = await contractRead?.startTime();
       const endTime = await contractRead?.endTime();
-      const currentMintPrice = await contractRead?.getCurrentMintPrice();
+      const maxPubSale = await contractRead?.MAX_PUB_SALE();
+      const maxTeamMint = await contractRead?.MAX_TEAM();
+      let currentMintPrice;
+      try {
+        currentMintPrice = await contractRead?.getCurrentMintPrice();
+      } catch {}
 
-      updateHasStarted(
-        ethers.BigNumber.from(currentBlockTimeStamp).gte(startTime)
+      const hasStarted = ethers.BigNumber.from(currentBlockTimeStamp).gte(
+        startTime
       );
+
+      if (recurseStart && !hasStarted) {
+        await wait();
+        return getData(true);
+      }
+
+      updateHasStarted(hasStarted);
       updateData({
+        maxPubSale: maxPubSale.toString(),
+        maxTeamMint: maxTeamMint.toString(),
         startTime: startTime.toString(),
         endTime: endTime.toString(),
         currentMintPrice: currentMintPrice,
-        currentMintPriceDisplay: new BigNumber(currentMintPrice.toString())
-          .div(10 ** 18)
-          .toFixed(4),
+        currentMintPriceDisplay: currentMintPrice
+          ? new BigNumber(currentMintPrice.toString()).div(10 ** 18).toFixed(4)
+          : void 0,
       });
-    };
-    fn();
-  }, [contractRead, provider]);
+      updateLoading(false);
+    },
+    [contractRead, provider]
+  );
 
-  const startInfo = useCountDown(data?.startTime);
+  useWaitForTransaction({
+    hash: mintTxData?.hash,
+    onSuccess: async () => {
+      await getAllData?.();
+      await getData();
+    },
+  });
+
+  React.useEffect(() => {
+    getData();
+  }, [getData]);
+
+  const startInfo = useCountDown(data?.startTime, () => getData(true));
   const timeLeftInfo = useCountDown(data?.endTime);
 
   const mint = useCallback(async () => {
@@ -137,8 +177,16 @@ export function MintBox() {
                 </p>
               </div>
               <div>
-                <p className="color-3 type-1">Total remaining</p>
-                <p className="color-1 type-1">10000 / 10000</p>
+                <p className="color-3 type-1">Total remaining (public sale)</p>
+                <p className="color-1 type-1">
+                  {totalMinted != null
+                    ? new BigNumber(data?.maxPubSale ?? 0)
+                        .minus(totalMinted)
+                        .plus(data?.maxTeamMint ?? 0)
+                        .toFixed()
+                    : "--"}{" "}
+                  / {data?.maxPubSale}
+                </p>
               </div>
             </div>
           </Grid>
@@ -146,7 +194,7 @@ export function MintBox() {
             <div className={styles.btnWrap}>
               {isConnected && (
                 <>
-                  {!hasStarted && (
+                  {!hasStarted && !loading && (
                     <p className="type-1 color-1">Mint has not started yet.</p>
                   )}
                   {hasStarted && (
@@ -200,26 +248,31 @@ export function MintBox() {
               </p>
             </div>
           )}
-          {hasStarted === false && (
+          {!hasStarted && !loading && (
             <div>
               <p className="color-3 type-1">Starts in</p>
               <p className="color-1 type-1">
-                <>
-                  {startInfo.days !== 0 &&
-                    `${startInfo.days} ${
-                      startInfo.days === 1 ? "day" : "days"
+                {startInfo.pastEndTime && (
+                  <>Starting shortly. Waiting for block.</>
+                )}
+                {!startInfo.pastEndTime && (
+                  <>
+                    {startInfo.days !== 0 &&
+                      `${startInfo.days} ${
+                        startInfo.days === 1 ? "day" : "days"
+                      } `}
+                    {startInfo.hours !== 0 &&
+                      `${startInfo.hours} ${
+                        startInfo.hours === 1 ? "hour" : "hours"
+                      } `}
+                    {`${startInfo.minutes} ${
+                      startInfo.minutes === 1 ? "minute" : "minutes"
                     } `}
-                  {startInfo.hours !== 0 &&
-                    `${startInfo.hours} ${
-                      startInfo.hours === 1 ? "hour" : "hours"
+                    {`${startInfo.seconds} ${
+                      startInfo.seconds === 1 ? "second" : "seconds"
                     } `}
-                  {`${startInfo.minutes} ${
-                    startInfo.minutes === 1 ? "minute" : "minutes"
-                  } `}
-                  {`${startInfo.seconds} ${
-                    startInfo.seconds === 1 ? "second" : "seconds"
-                  } `}
-                </>
+                  </>
+                )}
               </p>
             </div>
           )}

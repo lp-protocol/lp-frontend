@@ -73,7 +73,7 @@ export const SellRow = React.memo(
           const overrides = {
             from: address,
           };
-          console.log(overrides);
+
           const estimatedGas = await contract?.estimateGas.sell(
             token.tokenId,
             overrides

@@ -17,6 +17,7 @@ export type Tokens = {
 type Data = {
   ownedTokens?: Tokens;
   tokensForSale?: Tokens;
+  totalMinted?: string;
   buyPrice?: string;
   sellPrice?: string;
   getAllData?: () => Promise<void>;
@@ -78,21 +79,27 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   const getAllData = useCallback(async () => {
     let buyPrice: any;
+    let sellPrice: any;
     let insufficientLiquidity = false;
     try {
       buyPrice = await contractRead?.getBuyPrice();
     } catch {
       insufficientLiquidity = true;
     }
-    const sellPrice = (await contractRead?.getSellPrice()).toString();
+    let totalMinted = (await contractRead?.totalSupply()).toString();
+    try {
+      sellPrice = (await contractRead?.getSellPrice())[0].toString();
+    } catch {}
     const lockedIn = await contractRead?.lockedIn();
     await getAllTokens();
+
     updateData((d: any) => ({
       ...d,
       buyPrice: buyPrice?.[0].toString(),
       sellPrice,
       lockedIn,
       insufficientLiquidity,
+      totalMinted,
     }));
   }, [contractRead, getAllTokens]);
 

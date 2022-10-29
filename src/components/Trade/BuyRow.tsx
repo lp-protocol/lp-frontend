@@ -53,18 +53,15 @@ export const BuyRow = function BuyRow({
   });
 
   const [showDetail, updateShowDetail] = useState(false);
-  console.log(slippage / 100);
 
   const onBuy = useCallback(
     async (e: React.MouseEvent) => {
       try {
-        console.log(slippage / 100);
         e.stopPropagation();
         const overrides = {
           from: address,
           value: bn.plus(bn.times(slippage / 100).toFixed(0)).toFixed(0),
         };
-        console.log(overrides);
         const estimatedGas = await contract?.estimateGas.buy(
           token.tokenId,
           overrides

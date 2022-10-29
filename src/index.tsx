@@ -7,12 +7,11 @@ import { WagmiConfig, createClient, configureChains, chain } from "wagmi";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { infuraProvider } from "wagmi/providers/infura";
 import { DataProvider } from "./components/DataProvider/DataProvider";
-console.log(chain.hardhat);
-const { chains, provider } = configureChains(
-  [chain.hardhat],
-  [
-    // infuraProvider({ apiKey: process.env.REACT_APP_INFURA_KEY }),
 
+const { chains, provider } = configureChains(
+  [chain.hardhat, chain.goerli, chain.mainnet],
+  [
+    infuraProvider({ apiKey: process.env.REACT_APP_INFURA_KEY }),
     jsonRpcProvider({
       rpc: (_chain) => {
         if (_chain.id === chain.goerli.id) {
