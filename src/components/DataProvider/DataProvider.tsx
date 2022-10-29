@@ -21,6 +21,7 @@ type Data = {
   sellPrice?: string;
   getAllData?: () => Promise<void>;
   lockedIn?: boolean;
+  insufficientLiquidity?: boolean;
 };
 
 export const DataProviderContext = React.createContext<Data>({});
@@ -76,15 +77,22 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   }, [contractRead, address, isConnected]);
 
   const getAllData = useCallback(async () => {
-    const buyPrice = await contractRead?.getBuyPrice();
+    let buyPrice: any;
+    let insufficientLiquidity = false;
+    try {
+      buyPrice = await contractRead?.getBuyPrice();
+    } catch {
+      insufficientLiquidity = true;
+    }
     const sellPrice = (await contractRead?.getSellPrice()).toString();
     const lockedIn = await contractRead?.lockedIn();
     await getAllTokens();
     updateData((d: any) => ({
       ...d,
-      buyPrice: buyPrice[0].toString(),
+      buyPrice: buyPrice?.[0].toString(),
       sellPrice,
       lockedIn,
+      insufficientLiquidity,
     }));
   }, [contractRead, getAllTokens]);
 

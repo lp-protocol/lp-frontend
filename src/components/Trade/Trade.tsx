@@ -20,6 +20,8 @@ import {
 import { useAccount, useWaitForTransaction } from "wagmi";
 import { BuyRow } from "./BuyRow";
 import { SellRow } from "./SellRow";
+import isequal from "lodash.isequal";
+import { Slider } from "@mui/material";
 
 export type Token = {
   tokenId: string;
@@ -45,9 +47,7 @@ const SellRowListItem = memo(
       )}
     </div>
   ),
-  (prev, next) =>
-    prev.data.ownedTokensWithDetail?.[prev.data.ownedKeys[prev.index]].image ===
-    next.data.ownedTokensWithDetail?.[next.data.ownedKeys[next.index]].image
+  (prev, next) => isequal(prev.data, next.data)
 );
 
 const BuyRowListItem = memo(
@@ -55,6 +55,7 @@ const BuyRowListItem = memo(
     <div key={data.listingKeys[index].tokenId} style={style}>
       {data.tokens?.[data.listingKeys[index]] && (
         <BuyRow
+          slippage={data.slippage}
           updateTokens={data.updateTokens}
           buyPrice={data.buyPrice}
           token={data.tokens[data.listingKeys[index]]}
@@ -62,14 +63,17 @@ const BuyRowListItem = memo(
       )}
     </div>
   ),
-  (prev, next) =>
-    prev.data.tokens?.[prev.data.listingKeys[prev.index]].image ===
-    next.data.tokens?.[next.data.listingKeys[next.index]].image
+  (prev, next) => isequal(prev.data, next.data)
 );
 
 export function Trade() {
-  const { tokensForSale, ownedTokens, buyPrice, sellPrice } =
-    useContext(DataProviderContext);
+  const {
+    tokensForSale,
+    ownedTokens,
+    buyPrice,
+    sellPrice,
+    insufficientLiquidity,
+  } = useContext(DataProviderContext);
   const [tokens, updateTokens] = useState<undefined | Tokens>(tokensForSale);
   const [ownedTokensWithDetail, updateOwnedTokens] = useState<
     undefined | Tokens
@@ -173,17 +177,20 @@ export function Trade() {
     [ownedTokens]
   );
 
+  const [slippage, updateSlippage] = useState(5);
+
   const listData = useMemo(
     () => ({
       tokens,
       listingKeys,
       buyPrice,
+      slippage,
       updateTokens,
       updateOwnedTokens,
       ownedKeys,
       ownedTokensWithDetail,
     }),
-    [tokens, listingKeys, buyPrice, ownedKeys, ownedTokensWithDetail]
+    [tokens, listingKeys, slippage, buyPrice, ownedKeys, ownedTokensWithDetail]
   );
   return (
     <>
@@ -263,20 +270,34 @@ export function Trade() {
           {tab === "LISTINGS" && (
             <>
               {tokens && (
-                <div>
+                <div className="spacer">
                   <p className="color-1 type-1">
                     <>
                       Buy Price{" "}
-                      {new BigNumber(buyPrice ?? 0).div(10 ** 18).toFixed()} ETH
+                      {insufficientLiquidity
+                        ? "Insufficient liquidity to buy"
+                        : `${new BigNumber(buyPrice ?? 0)
+                            .div(10 ** 18)
+                            .toFixed()} ETH`}
                     </>
                   </p>
-                  <p
-                    style={{ fontSize: "12px", fontFamily: "arial" }}
-                    className="color-1"
-                  >
-                    5% will be added upon purchase to account for slippage. Any
-                    extra will be refunded.
-                  </p>
+                  <div style={{ maxWidth: "300px", width: "100%" }}>
+                    <p className="color-1 type-0">Slippage {slippage}%</p>
+                    <p
+                      className="color-1"
+                      style={{ fontFamily: "arial", fontSize: "12px" }}
+                    >
+                      Increase slippage to account for price increases during
+                      transaction. Additional amounts will be refunded.
+                    </p>
+                    <Slider
+                      aria-label="Volume"
+                      value={slippage}
+                      onChange={(evt, value) => {
+                        updateSlippage(value as number);
+                      }}
+                    />
+                  </div>
                 </div>
               )}
 

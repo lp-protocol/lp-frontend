@@ -247,6 +247,19 @@ function App() {
             this protocol and that new NFT projects will adopt it.
           </p>
           <h2 id="trustless-escrow" className="type-1 color-1">
+            Roadmap
+          </h2>
+          <p className="type-1 color-2">
+            • Expand upon the LP Protocol by offering bounties to the community.
+          </p>
+          <p className="type-1 color-2">
+            • Support projects using the LP protocol
+          </p>
+          <p className="type-1 color-2">
+            • Create listing aggregator for projects using the LP protocol to
+            support NFT liquidity.
+          </p>
+          <h2 id="trustless-escrow" className="type-1 color-1">
             Trustless Escrow
           </h2>
 
@@ -282,8 +295,8 @@ function App() {
             functionality. If you'd like to sell an LP NFT you own then you can
             instantly swap it for ETH because of the liquidity pool from the
             initial mint proceeds, on-going royalties, and on-chain fees set in
-            place by the LP smart contract itself. The amount of ETH you'll get
-            is determined by the amount of ETH in the pool.
+            place by the LP smart contract itself. The buy and sell prices are
+            derived from the following.
             <br />
             <br />
           </p>
@@ -299,7 +312,9 @@ function App() {
             • K = (A)*(T-B) = Our constant product (changes due to accumulating
             fees)
           </p>
-          <p className="color-3 type-1">• Price = A/(T-B)</p>
+          <p className="color-3 type-1">• Buy Price = A/(T-B - 1) </p>
+          <p className="color-3 type-1">• Sell Price = A/(T-B + 1) </p>
+          <p className="color-3 type-1">• Fee = abs(A/(T-B) - A/(T-(B+-1))</p>
 
           <h2 id="fees" className="type-1 color-1">
             Holders Collect Fees
