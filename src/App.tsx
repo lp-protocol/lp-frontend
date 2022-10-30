@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import logo from "./logo.svg";
 import "./App.scss";
 import { Grid } from "@mui/material";
 import { MintBox } from "./components/MintBox/MintBox";
