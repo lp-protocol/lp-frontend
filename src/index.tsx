@@ -9,23 +9,23 @@ import { infuraProvider } from "wagmi/providers/infura";
 import { DataProvider } from "./components/DataProvider/DataProvider";
 
 const { chains, provider } = configureChains(
-  [chain.hardhat, chain.goerli, chain.mainnet],
+  [chain.mainnet],
   [
     infuraProvider({ apiKey: process.env.REACT_APP_INFURA_KEY }),
-    jsonRpcProvider({
-      rpc: (_chain) => {
-        if (_chain.id === chain.goerli.id) {
-          return {
-            http: `https://goerli.infura.io/v3/be4dac94367a40168af1aadd4423eead`,
-            webSocket: `wss://goerli.infura.io/ws/v3/be4dac94367a40168af1aadd4423eead`,
-          };
-        }
-        return {
-          http: `http://127.0.0.1:8545`,
-          webSocket: `ws://127.0.0.1:8545`,
-        };
-      },
-    }),
+    // jsonRpcProvider({
+    //   rpc: (_chain) => {
+    //     if (_chain.id === chain.goerli.id) {
+    //       return {
+    //         http: `https://goerli.infura.io/v3/be4dac94367a40168af1aadd4423eead`,
+    //         webSocket: `wss://goerli.infura.io/ws/v3/be4dac94367a40168af1aadd4423eead`,
+    //       };
+    //     }
+    //     return {
+    //       http: `http://127.0.0.1:8545`,
+    //       webSocket: `ws://127.0.0.1:8545`,
+    //     };
+    //   },
+    // }),
   ]
 );
 
