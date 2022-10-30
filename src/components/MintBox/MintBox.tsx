@@ -160,10 +160,10 @@ export function MintBox() {
           <p className="color-2 type-1">Dutch auction</p>
         </Grid>
         <Grid item xs={12} sm={4}>
-          <p className="color-2 type-1">Max price: 3.33 ETH</p>
+          <p className="color-2 type-1">Max price: 1.11 ETH</p>
         </Grid>
         <Grid item xs={12} sm={4}>
-          <p className="color-2 type-1">Min price: 0.0333 ETH</p>
+          <p className="color-2 type-1">Min price: 0.0111 ETH</p>
         </Grid>
       </Grid>
       <div className={styles.wrap}>
