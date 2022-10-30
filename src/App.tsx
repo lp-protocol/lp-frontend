@@ -153,8 +153,8 @@ function App() {
             <div className="spacer">
               <h2 className="type-2 color-3">Trustless Escrow</h2>
               <p className="type-1 color-2">
-                Funds and NFTs are held in trustless escrow for no more than 12
-                days. If the project doesn't sell out in 12 days the experiment
+                Funds and NFTs are held in trustless escrow for no more than 11
+                days. If the project doesn't sell out in 11 days the experiment
                 ends and you can withdraw your ETH (minus gas fees).
               </p>
 
@@ -183,9 +183,8 @@ function App() {
             <div className="spacer">
               <h2 className="type-2 color-3">Holders Collect Fees</h2>
               <p className="type-1 color-2">
-                Every time an LP NFT is sold within the LP smart contract a 10%
-                fee is taken. 5% of that fee is put into a pool for holders to
-                claim. The other 5% goes directly to the liquidity pool.
+                Every time an LP NFT is bought or sold from the internal liquidity pool a fee is taken. Half of that fee is put into a pool for holders to
+                claim. The other half goes back to the liquidity pool.
               </p>
               <p className="type-1 color-2">
                 <a href="#fees">Learn more</a>
@@ -203,7 +202,7 @@ function App() {
               <div>
                 <h2 className="type-2 color-3">Scenario 1</h2>
                 <p className="type-1 color-1">
-                  First 9k LP NFTs are minted within 12 days
+                  First 9k LP NFTs are minted within 11 days
                 </p>
               </div>
               <p className="type-1 color-2">
@@ -220,7 +219,7 @@ function App() {
               <div>
                 <h2 className="type-2 color-3">Scenario 2</h2>
                 <p className="type-1 color-1">
-                  First 9k LP NFTs are NOT minted within 12 days
+                  First 9k LP NFTs are NOT minted within 11 days
                 </p>
               </div>
               <p className="type-1 color-2">
@@ -271,10 +270,9 @@ function App() {
             the bag.
           </p>
           <p className="type-1 color-2">
-            The escrow period ends after the first 9k are minted, or after 12
+            The escrow period ends after the first 9k are minted, or after 11
             days - whichever comes first. If the initial 9,000 LP NFTs are not
-            minted within 12 days then The LP considers the project a failure
-            and it is scrapped. You'll be able to withdraw your funds from the
+            minted within 11 days then the project is scrapped. You'll be able to withdraw your funds from the
             smart contract (minus gas fees).
           </p>
           <h2 id="instant-liquidity" className="type-1 color-1">
@@ -346,6 +344,12 @@ function App() {
             render your LP NFT image in Safari you can use a fallback canvas
             method, which we are using for the above preview images, to render a
             crisp image.
+          </p>
+          <h2 id="fees" className="type-1 color-1">
+            Team mint
+          </h2>
+          <p className="type-1 color-2">
+            When the LP smart contract was deployed 1,000 LP NFTs were minted to a team wallet. 
           </p>
         </div>
       </div>

@@ -277,6 +277,16 @@ export function MintBox() {
             </div>
           )}
         </div>
+        <div style={{ display: 'flex', justifyContent: 'center'}}>
+        <a
+          href="https://7q7win2vvm2wnqvltzauqamrnuyhq3jn57yqad2nrgau4fe3l5ya.arweave.net/_D9kN1WrNWbCq55BSAGRbTB4bS3v8QAPTYmBThSbX3A/0"
+          className="color-2 type-1"
+          target="_blank"
+          style={{ display: 'inline-block', marginTop: "20px", fontSize: "16px", textAlign: 'center' }}
+        >
+          By minting you agree to the CCO-CBE terms.
+        </a>
+        </div>
       </div>
     </>
   );
