@@ -277,15 +277,21 @@ export function MintBox() {
             </div>
           )}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center'}}>
-        <a
-          href="https://7q7win2vvm2wnqvltzauqamrnuyhq3jn57yqad2nrgau4fe3l5ya.arweave.net/_D9kN1WrNWbCq55BSAGRbTB4bS3v8QAPTYmBThSbX3A/0"
-          className="color-2 type-1"
-          target="_blank"
-          style={{ display: 'inline-block', marginTop: "20px", fontSize: "16px", textAlign: 'center' }}
-        >
-          By minting you agree to the CCO-CBE terms.
-        </a>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <a
+            href="https://github.com/a16z/a16z-contracts/blob/master/licenses/pdf/06%20-%20a16z%20CBE%20Form%20License%20(CBE-Public).pdf"
+            className="color-2 type-1"
+            target="_blank"
+            style={{
+              display: "inline-block",
+              marginTop: "20px",
+              fontSize: "16px",
+              textAlign: "center",
+            }}
+            rel="noreferrer"
+          >
+            By minting you agree to the CC0 CBE-PUBLIC terms.
+          </a>
         </div>
       </div>
     </>
