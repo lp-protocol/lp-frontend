@@ -49,10 +49,11 @@ export function MintBox() {
 
   const [data, updateData] = useState<any>();
   const enabled = Boolean(
-    data?.currentMintPrice && !bnAmount.isNaN() && bnAmount.gt(0)
+    data?.currentMintPrice && !bnAmount.isNaN() && bnAmount.gt(0) && bnAmount.lte(100)
   );
+  const hasError = bnAmount.gt(100);
 
-  const { config, isError } = usePrepareContractWrite({
+  const { config } = usePrepareContractWrite({
     address: process.env.REACT_APP_LP_CONTRACT,
     abi,
     functionName: "mint",
@@ -66,7 +67,7 @@ export function MintBox() {
   });
 
   let gasLimit = new BigNumber(config?.request?.gasLimit.toString() ?? "0");
-  gasLimit = gasLimit.plus(gasLimit.times(0.25));
+  gasLimit = gasLimit.plus(gasLimit.times(0.1));
 
   const {
     data: mintTxData,
@@ -208,6 +209,7 @@ export function MintBox() {
                         <label className="type-1 color-1">
                           How many would you like to mint?
                         </label>
+                        {hasError && <p style={{ color: 'red' }} className="type-1">Max 100 per tx</p>}
                         <TextInput
                           value={amount}
                           onChange={(e) => updateAmount(e.currentTarget.value)}
