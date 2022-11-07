@@ -11,6 +11,7 @@ import { Randomizer } from "./components/Randomizer/Randomizer";
 import { IconBar } from "./components/IconBar/IconBar";
 import { DataProviderContext } from "./components/DataProvider/DataProvider";
 import { Trade } from "./components/Trade/Trade";
+import { MintPriceChart } from "./components/MintPriceChart/MintPriceChart";
 
 function useMatchMedia() {
   const [isSm, updateIsSm] = useState(false);
@@ -93,6 +94,7 @@ function App() {
             )}
           </Grid>
         </Grid>
+
         <div style={{ maxWidth: "600px", margin: "auto", marginTop: "10rem" }}>
           <h2
             style={{ fontWeight: "normal", textAlign: "justify" }}
@@ -103,6 +105,12 @@ function App() {
             instant buy/sell functionality, and rewards holders.
           </h2>
         </div>
+        {!lockedIn && (
+          <div style={{ marginTop: "10rem" }}>
+            <h2 className="type-2 color-3">Mint price over time</h2>
+            <MintPriceChart />
+          </div>
+        )}
       </div>
 
       {!lockedIn && (
@@ -183,8 +191,10 @@ function App() {
             <div className="spacer">
               <h2 className="type-2 color-3">Holders Collect Fees</h2>
               <p className="type-1 color-2">
-                Every time an LP NFT is bought or sold from the internal liquidity pool a fee is taken. Half of that fee is put into a pool for holders to
-                claim. The other half goes back to the liquidity pool.
+                Every time an LP NFT is bought or sold from the internal
+                liquidity pool a fee is taken. Half of that fee is put into a
+                pool for holders to claim. The other half goes back to the
+                liquidity pool.
               </p>
               <p className="type-1 color-2">
                 <a href="#fees">Learn more</a>
@@ -272,8 +282,8 @@ function App() {
           <p className="type-1 color-2">
             The escrow period ends after the first 9k are minted, or after 11
             days - whichever comes first. If the initial 9,000 LP NFTs are not
-            minted within 11 days then the project is scrapped. You'll be able to withdraw your funds from the
-            smart contract (minus gas fees).
+            minted within 11 days then the project is scrapped. You'll be able
+            to withdraw your funds from the smart contract (minus gas fees).
           </p>
           <h2 id="instant-liquidity" className="type-1 color-1">
             Instant Liquidity
@@ -349,7 +359,8 @@ function App() {
             Team mint
           </h2>
           <p className="type-1 color-2">
-            When the LP smart contract was deployed 1,000 LP NFTs were minted to a team wallet. 
+            When the LP smart contract was deployed 1,000 LP NFTs were minted to
+            a team wallet.
           </p>
         </div>
       </div>
