@@ -91,7 +91,10 @@ export function Trade() {
       if (metadataCache[tokenId]) {
         return metadataCache[tokenId];
       }
-      let uri = await lpContractRead?.tokenURI(tokenId);
+      const res = await fetch(
+        `https://pxg-prod.herokuapp.com/lp/${tokenId}`
+      ).then((res) => res.json());
+      let uri = res.data;
       [, uri] = uri.split("base64,");
       const metadata = { ...JSON.parse(atob(uri)), tokenId };
       metadataCache[tokenId] = metadata;

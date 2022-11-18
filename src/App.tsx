@@ -36,7 +36,7 @@ function App() {
   const { lockedIn } = useContext(DataProviderContext);
   return (
     <>
-      <Player>
+      {/* <Player>
         {({ play, pause, playing }) => (
           <a
             href="#info"
@@ -55,7 +55,7 @@ function App() {
             </div>
           </a>
         )}
-      </Player>
+      </Player> */}
 
       <div style={{ padding: "6rem 1rem 0" }} className="wrap" id="info">
         <p style={{ marginBottom: "2rem" }} className="color-4 type-2">
@@ -71,27 +71,24 @@ function App() {
             </h2>
           </Grid>
           <Grid item xs={12} md={6}>
-            {!lockedIn && <MintBox />}
-            {lockedIn && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               <div
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  flex: 1,
+                  maxWidth: "400px",
+                  borderRadius: "16px",
+                  overflow: "hidden",
                 }}
               >
-                <div
-                  style={{
-                    flex: 1,
-                    maxWidth: "400px",
-                    borderRadius: "16px",
-                    overflow: "hidden",
-                  }}
-                >
-                  <Randomizer />
-                </div>
+                <Randomizer />
               </div>
-            )}
+            </div>
           </Grid>
         </Grid>
 
@@ -105,50 +102,8 @@ function App() {
             instant buy/sell functionality, and rewards holders.
           </h2>
         </div>
-        {!lockedIn && (
-          <div style={{ marginTop: "10rem" }}>
-            <h2 className="type-2 color-3">Mint price over time</h2>
-            <MintPriceChart />
-          </div>
-        )}
       </div>
-
-      {!lockedIn && (
-        <>
-          {!isSm && (
-            <div style={{ width: "100%", display: "flex" }}>
-              <div style={{ width: "16.66666667%" }}>
-                <Randomizer />
-              </div>
-              <div style={{ width: "16.66666667%" }}>
-                <Randomizer />
-              </div>
-              <div style={{ width: "16.66666667%" }}>
-                <Randomizer />
-              </div>
-              <div style={{ width: "16.66666667%" }}>
-                <Randomizer />
-              </div>
-              <div style={{ width: "16.66666667%" }}>
-                <Randomizer />
-              </div>
-              <div style={{ width: "16.66666667%" }}>
-                <Randomizer />
-              </div>
-            </div>
-          )}
-
-          {isSm && (
-            <div style={{ width: "100%", display: "flex" }}>
-              <div style={{ width: "100%" }}>
-                <Randomizer />
-              </div>
-            </div>
-          )}
-        </>
-      )}
-
-      {lockedIn && <Trade />}
+      <Trade />
 
       <div className="wrap">
         <div className={styles.howHeader}>
