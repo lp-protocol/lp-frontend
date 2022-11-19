@@ -10,7 +10,7 @@ export const ClaimMany = React.memo(
     const claimMany = async () => {
       if (writeAsync) {
         const tx = await writeAsync();
-      console.log(tx);
+        console.log(tx);
       }
     };
 
