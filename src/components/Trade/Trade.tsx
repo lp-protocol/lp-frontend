@@ -22,6 +22,7 @@ import { BuyRow } from "./BuyRow";
 import { SellRow } from "./SellRow";
 import isequal from "lodash.isequal";
 import { Slider } from "@mui/material";
+import { ClaimMany } from "./ClaimMany";
 
 export type Token = {
   tokenId: string;
@@ -248,6 +249,7 @@ export function Trade() {
                       )}
                       {isConnected && (
                         <>
+                          <ClaimMany tokenIds={ownedKeys}/>
                           {ownedKeys.length > 0 && (
                             <div className={tradestyles.listWrap}>
                               <List
