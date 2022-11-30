@@ -15,6 +15,10 @@ import BigNumber from "bignumber.js";
 import { Dialog } from "@mui/material";
 import abi from "../../assets/lpabi.json";
 import isequal from "lodash.isequal";
+import {
+  ConnectButton,
+  ConnectButtonBase,
+} from "../ConnectButton/ConnectButton";
 
 type BuyRowProps = {
   token: Token | RawToken;
@@ -75,7 +79,8 @@ export const BuyRow = function BuyRow({
           gasLimit: gasLimitStr,
         });
         updateHash(tx.hash);
-      } catch (e) {
+      } catch (e: any) {
+        alert(e.message);
         console.log(e);
       }
     },
@@ -89,13 +94,26 @@ export const BuyRow = function BuyRow({
     <div onClick={onRowClick} className={styles.tradeRow}>
       <Dialog classes={{ paper: styles.modalPaper }} open={showDetail}>
         <img className={styles.lgImg} src={token?.image} />
-        <Button
-          // disabled={isLoading}
-          onClick={onBuy}
-          style={{ width: "100%" }}
-        >
-          Buy
-        </Button>
+        <ConnectButtonBase>
+          {({ isConnected, isConnecting, show, hide, address, ensName }) => {
+            return (
+              <>
+                {!isConnected && <Button onClick={show}>Connect wallet</Button>}
+                {isConnected && (
+                  <>
+                    <Button
+                      // disabled={isLoading}
+                      onClick={onBuy}
+                      style={{ width: "100%" }}
+                    >
+                      Buy
+                    </Button>
+                  </>
+                )}
+              </>
+            );
+          }}
+        </ConnectButtonBase>
       </Dialog>
       {!token.image && (
         <div
@@ -109,13 +127,36 @@ export const BuyRow = function BuyRow({
       <p className="type-1 color-3">
         {token?.name ?? `The LP #${token.toString()}`}
       </p>
-      <Button
-        // disabled={isLoading}
-        onClick={onBuy}
-        style={{ width: "100px", justifySelf: "flex-end" }}
-      >
-        Buy
-      </Button>
+
+      <ConnectButtonBase>
+        {({ isConnected, isConnecting, show, hide, address, ensName }) => {
+          return (
+            <>
+              {!isConnected && (
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    show();
+                  }}
+                >
+                  Connect wallet
+                </Button>
+              )}
+              {isConnected && (
+                <>
+                  <Button
+                    // disabled={isLoading}
+                    onClick={onBuy}
+                    style={{ width: "100px", justifySelf: "flex-end" }}
+                  >
+                    Buy
+                  </Button>
+                </>
+              )}
+            </>
+          );
+        }}
+      </ConnectButtonBase>
     </div>
   );
 };
