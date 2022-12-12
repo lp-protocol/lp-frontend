@@ -1,5 +1,5 @@
-import { Dialog } from "@mui/material";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Dialog } from '@mui/material';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   useAccount,
   useContract,
@@ -7,15 +7,15 @@ import {
   useNetwork,
   useSigner,
   useWaitForTransaction,
-} from "wagmi";
-import { useSell } from "../../utils/useSell";
-import { Button } from "../Button/Button";
-import { DataProviderContext, RawToken } from "../DataProvider/DataProvider";
-import styles from "./styles.module.scss";
-import { Token } from "./Trade";
-import abi from "../../assets/lpabi.json";
-import BigNumber from "bignumber.js";
-import { useLpContractRead } from "../../utils/useLpContractRead";
+} from 'wagmi';
+import { useSell } from '../../utils/useSell';
+import { Button } from '../Button/Button';
+import { DataProviderContext, RawToken } from '../DataProvider/DataProvider';
+import styles from './styles.module.scss';
+import { Token } from './Trade';
+import abi from '../../assets/lpabi.json';
+import BigNumber from 'bignumber.js';
+import { useLpContractRead } from '../../utils/useLpContractRead';
 
 export const SellRow = React.memo(
   ({ token, updateTokens }: { token: Token | RawToken; updateTokens: any }) => {
@@ -25,7 +25,7 @@ export const SellRow = React.memo(
     const { data: signer } = useSigner({ chainId: chain?.id });
 
     const contractRead = useLpContractRead();
-    const [fee, updateFee] = useState("");
+    const [fee, updateFee] = useState('');
 
     const getFeeAndSetState = useCallback(async () => {
       const fee = await contractRead?.calculatePendingPayment(token.tokenId);
@@ -78,9 +78,9 @@ export const SellRow = React.memo(
             token.tokenId,
             overrides
           );
-          const gasLimit = new BigNumber(estimatedGas?.toString() ?? "0");
+          const gasLimit = new BigNumber(estimatedGas?.toString() ?? '0');
           const gasLimitStr = gasLimit
-            .plus(gasLimit.times("0.25").toFixed(0))
+            .plus(gasLimit.times('0.25').toFixed(0))
             .toFixed();
           const tx = await contract?.sell(token.tokenId, {
             ...overrides,
@@ -106,9 +106,9 @@ export const SellRow = React.memo(
             token.tokenId,
             overrides
           );
-          const gasLimit = new BigNumber(estimatedGas?.toString() ?? "0");
+          const gasLimit = new BigNumber(estimatedGas?.toString() ?? '0');
           const gasLimitStr = gasLimit
-            .plus(gasLimit.times("0.25").toFixed(0))
+            .plus(gasLimit.times('0.25').toFixed(0))
             .toFixed();
           const tx = await contract?.claim(token.tokenId, {
             ...overrides,
@@ -135,14 +135,14 @@ export const SellRow = React.memo(
       >
         <Dialog classes={{ paper: styles.modalPaper }} open={showDetail}>
           <img className={styles.lgImg} src={token?.image} />
-          <Button onClick={onSell} style={{ width: "100%" }}>
+          <Button onClick={onSell} style={{ width: '100%' }}>
             Sell
           </Button>
         </Dialog>
         {token.image && <img src={token.image} />}
         {!token.image && (
           <div
-            style={{ background: "#000", height: "60px" }}
+            style={{ background: '#000', height: '60px' }}
             className={styles.loading}
           >
             <p className="color-1">LOADING IMAGE</p>
@@ -150,18 +150,18 @@ export const SellRow = React.memo(
         )}
         <div>
           <p className="type-0 color-3">{token.name}</p>
-          <p className="type-0 color-3">Claimable: {fee || "0"} ETH</p>
+          <p className="type-0 color-3">Claimable: {fee || '0'} ETH</p>
         </div>
         <Button
           onClick={onSell}
-          style={{ width: "100px", justifySelf: "flex-end" }}
+          style={{ width: '100px', justifySelf: 'flex-end' }}
         >
           Sell
         </Button>
         <Button
           onClick={onClaim}
           disabled={!fee}
-          style={{ justifySelf: "flex-end" }}
+          style={{ justifySelf: 'flex-end' }}
         >
           Claim Fee
         </Button>

@@ -1,12 +1,12 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.scss";
-import App from "./App";
-import { ConnectKitProvider, getDefaultClient } from "connectkit";
-import { WagmiConfig, createClient, configureChains, chain } from "wagmi";
-import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
-import { infuraProvider } from "wagmi/providers/infura";
-import { DataProvider } from "./components/DataProvider/DataProvider";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.scss';
+import App from './App';
+import { ConnectKitProvider, getDefaultClient } from 'connectkit';
+import { WagmiConfig, createClient, configureChains, chain } from 'wagmi';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { infuraProvider } from 'wagmi/providers/infura';
+import { DataProvider } from './components/DataProvider/DataProvider';
 
 const { chains, provider } = configureChains(
   [chain.mainnet],
@@ -31,7 +31,7 @@ const { chains, provider } = configureChains(
 
 const client = createClient(
   getDefaultClient({
-    appName: "The LP",
+    appName: 'The LP',
     infuraId: process.env.REACT_APP_INFURA_KEY,
     chains,
     provider,
@@ -39,7 +39,7 @@ const client = createClient(
 );
 
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
+  document.getElementById('root') as HTMLElement
 );
 root.render(
   <WagmiConfig client={client}>

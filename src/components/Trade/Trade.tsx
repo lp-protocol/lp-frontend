@@ -1,27 +1,27 @@
-import React, { memo, useContext, useEffect, useMemo, useState } from "react";
-import ethDiamond from "../../assets/eth-diamond.png";
-import styles from "../../App.module.scss";
+import React, { memo, useContext, useEffect, useMemo, useState } from 'react';
+import ethDiamond from '../../assets/eth-diamond.png';
+import styles from '../../App.module.scss';
 import {
   DataProviderContext,
   RawToken,
   Tokens,
-} from "../DataProvider/DataProvider";
-import { BigNumber } from "bignumber.js";
-import { useLpContractRead } from "../../utils/useLpContractRead";
-import tradestyles from "./styles.module.scss";
-import { Button } from "../Button/Button";
+} from '../DataProvider/DataProvider';
+import { BigNumber } from 'bignumber.js';
+import { useLpContractRead } from '../../utils/useLpContractRead';
+import tradestyles from './styles.module.scss';
+import { Button } from '../Button/Button';
 // @ts-ignore
-import { areEqual, FixedSizeList as List } from "react-window";
-import { useSell } from "../../utils/useSell";
+import { areEqual, FixedSizeList as List } from 'react-window';
+import { useSell } from '../../utils/useSell';
 import {
   ConnectButton,
   ConnectButtonBase,
-} from "../ConnectButton/ConnectButton";
-import { useAccount, useWaitForTransaction } from "wagmi";
-import { BuyRow } from "./BuyRow";
-import { SellRow } from "./SellRow";
-import isequal from "lodash.isequal";
-import { Slider } from "@mui/material";
+} from '../ConnectButton/ConnectButton';
+import { useAccount, useWaitForTransaction } from 'wagmi';
+import { BuyRow } from './BuyRow';
+import { SellRow } from './SellRow';
+import isequal from 'lodash.isequal';
+import { Slider } from '@mui/material';
 
 export type Token = {
   tokenId: string;
@@ -34,7 +34,7 @@ let metadataCache: {
   [tokenId: string]: Token;
 } = {};
 
-const LS_KEY = "__LP_METADATA_CACHE__";
+const LS_KEY = '__LP_METADATA_CACHE__';
 
 const SellRowListItem = memo(
   ({ index, style, data }: any) => (
@@ -95,7 +95,7 @@ export function Trade() {
         `https://pxg-prod.herokuapp.com/lp/${tokenId}`
       ).then((res) => res.json());
       let uri = res.data;
-      [, uri] = uri.split("base64,");
+      [, uri] = uri.split('base64,');
       const metadata = { ...JSON.parse(atob(uri)), tokenId };
       metadataCache[tokenId] = metadata;
       return metadata;
@@ -166,7 +166,7 @@ export function Trade() {
     Promise.all([loadTokensForSale(), loadOwnedTokens()]).then(() => {});
   }, [tokensForSale, ownedTokens, lpContractRead]);
 
-  const [tab, updateTab] = useState<"LISTINGS" | "WALLET">("LISTINGS");
+  const [tab, updateTab] = useState<'LISTINGS' | 'WALLET'>('LISTINGS');
 
   const onTabClick = (e: any) => {
     if (e.target.dataset?.tab) {
@@ -200,34 +200,34 @@ export function Trade() {
       <div
         className="wrap"
         style={{
-          maxWidth: "800px",
-          marginLeft: "auto",
-          marginRight: "auto",
-          marginBottom: "200px",
+          maxWidth: '800px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          marginBottom: '200px',
         }}
       >
         <div className="spacer">
           <div onClick={onTabClick} className={tradestyles.tabWrap}>
             <p
               data-tab="LISTINGS"
-              className={`color-4 type-2 ${tab === "LISTINGS" ? "active" : ""}`}
+              className={`color-4 type-2 ${tab === 'LISTINGS' ? 'active' : ''}`}
             >
               Listings
             </p>
             <p
               data-tab="WALLET"
-              className={`color-4 type-2 ${tab === "WALLET" ? "active" : ""}`}
+              className={`color-4 type-2 ${tab === 'WALLET' ? 'active' : ''}`}
             >
               Your NFTs
             </p>
           </div>
 
-          {tab === "WALLET" && (
+          {tab === 'WALLET' && (
             <>
               <div>
                 <p className="color-1 type-1">
                   <>
-                    Sell Price{" "}
+                    Sell Price{' '}
                     {new BigNumber(sellPrice ?? 0).div(10 ** 18).toFixed()} ETH
                   </>
                 </p>
@@ -254,7 +254,7 @@ export function Trade() {
                                 height={800}
                                 itemCount={ownedKeys.length}
                                 itemSize={70}
-                                width={"100%"}
+                                width={'100%'}
                                 itemData={listData}
                               >
                                 {SellRowListItem}
@@ -270,25 +270,25 @@ export function Trade() {
             </>
           )}
 
-          {tab === "LISTINGS" && (
+          {tab === 'LISTINGS' && (
             <>
               {tokens && (
                 <div className="spacer">
                   <p className="color-1 type-1">
                     <>
-                      Buy Price{" "}
+                      Buy Price{' '}
                       {insufficientLiquidity
-                        ? "Insufficient liquidity to buy"
+                        ? 'Insufficient liquidity to buy'
                         : `${new BigNumber(buyPrice ?? 0)
                             .div(10 ** 18)
                             .toFixed()} ETH`}
                     </>
                   </p>
-                  <div style={{ maxWidth: "300px", width: "100%" }}>
+                  <div style={{ maxWidth: '300px', width: '100%' }}>
                     <p className="color-1 type-0">Slippage {slippage}%</p>
                     <p
                       className="color-1"
-                      style={{ fontFamily: "arial", fontSize: "12px" }}
+                      style={{ fontFamily: 'arial', fontSize: '12px' }}
                     >
                       Increase slippage to account for price increases during
                       transaction. Additional amounts will be refunded.
@@ -311,7 +311,7 @@ export function Trade() {
                     itemCount={listingKeys.length}
                     itemSize={70}
                     itemData={listData}
-                    width={"100%"}
+                    width={'100%'}
                   >
                     {BuyRowListItem}
                   </List>

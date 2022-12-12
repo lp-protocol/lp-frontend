@@ -1,5 +1,5 @@
-import React, { memo, useMemo, useRef, useState } from "react";
-import sprite from "./sprite";
+import React, { memo, useMemo, useRef, useState } from 'react';
+import sprite from './sprite';
 
 function* pseudoRandom(seed: number): Generator<number, number, number> {
   let value = seed;
@@ -44,7 +44,7 @@ export const Randomizer = memo(function Randomizer() {
     const img = new Image();
 
     const run = () => {
-      const ctx = canvas.current?.getContext("2d");
+      const ctx = canvas.current?.getContext('2d');
       if (!ctx) return;
       ctx.clearRect(0, 0, 40, 40);
       const hasShirt = r(generator.next().value + 4, 1, 100) <= 96;
@@ -125,13 +125,13 @@ export const Randomizer = memo(function Randomizer() {
       // hat
       // kit
 
-      const colors = ["#f8f8f8", "#E5FBEF", "#F5FCDD", "#FDEEE8", "#E5F1F6"];
+      const colors = ['#f8f8f8', '#E5FBEF', '#F5FCDD', '#FDEEE8', '#E5F1F6'];
 
       ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
       ctx.fillRect(0, 0, 40, 40);
 
       Object.entries(traits).forEach(([trait, tile], i) => {
-        if (tile === 0 && trait !== "body") return;
+        if (tile === 0 && trait !== 'body') return;
 
         const col = tile % 3;
         const row = Math.floor(tile / 3);
@@ -139,7 +139,7 @@ export const Randomizer = memo(function Randomizer() {
       });
     };
 
-    img.addEventListener("load", async () => {
+    img.addEventListener('load', async () => {
       await run();
     });
 
@@ -147,15 +147,15 @@ export const Randomizer = memo(function Randomizer() {
   }, [generator]);
 
   return (
-    <div style={{ overflow: "hidden" }}>
+    <div style={{ overflow: 'hidden' }}>
       <canvas
         onClick={() => {
           updateFlipper(!flipper);
         }}
         style={{
-          cursor: "pointer",
-          imageRendering: "pixelated",
-          width: "100%",
+          cursor: 'pointer',
+          imageRendering: 'pixelated',
+          width: '100%',
         }}
         width="40"
         height="40"

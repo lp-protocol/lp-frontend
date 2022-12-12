@@ -1,14 +1,14 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef } from 'react';
 
 export function useAudioHook(path: string, loop: boolean) {
   const [playing, updatePlaying] = useState(false);
   const audio = useRef(new Audio(path));
   audio.current.loop = loop;
-  audio.current.addEventListener("play", () => {
+  audio.current.addEventListener('play', () => {
     updatePlaying(true);
   });
 
-  audio.current.addEventListener("pause", () => {
+  audio.current.addEventListener('pause', () => {
     updatePlaying(false);
   });
 

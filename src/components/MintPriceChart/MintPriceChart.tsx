@@ -1,7 +1,7 @@
-import { Chart, ChartItem, registerables, Interaction } from "chart.js";
+import { Chart, ChartItem, registerables, Interaction } from 'chart.js';
 // @ts-ignore
-import { CrosshairPlugin, Interpolate } from "chartjs-plugin-crosshair";
-import React, { useRef } from "react";
+import { CrosshairPlugin, Interpolate } from 'chartjs-plugin-crosshair';
+import React, { useRef } from 'react';
 
 export function MintPriceChart() {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -28,34 +28,34 @@ export function MintPriceChart() {
       if (i % 5 === 0) {
         labels.push(`Day ${++count}`);
       } else {
-        labels.push("");
+        labels.push('');
       }
     }
     console.log(data);
-    new Chart(canvas.current.getContext("2d") as ChartItem, {
-      type: "line",
+    new Chart(canvas.current.getContext('2d') as ChartItem, {
+      type: 'line',
       data: {
         labels,
 
         datasets: [
           {
-            label: "Mint price",
+            label: 'Mint price',
             data,
             backgroundColor: [
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)",
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)',
             ],
             borderColor: [
-              "rgba(255, 99, 132, 1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)",
+              'rgba(255, 99, 132, 1)',
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 159, 64, 1)',
             ],
             borderWidth: 1,
           },
@@ -65,12 +65,12 @@ export function MintPriceChart() {
         plugins: {
           tooltip: {
             // @ts-ignore
-            mode: "interpolate",
+            mode: 'interpolate',
             intersect: false,
           },
           crosshair: {
             line: {
-              color: "#F66", // crosshair line color
+              color: '#F66', // crosshair line color
               width: 1, // crosshair line width
             },
             sync: {
@@ -80,10 +80,10 @@ export function MintPriceChart() {
             },
             zoom: {
               enabled: true, // enable zooming
-              zoomboxBackgroundColor: "rgba(66,133,244,0.2)", // background color of zoom box
-              zoomboxBorderColor: "#48F", // border color of zoom box
-              zoomButtonText: "Reset Zoom", // reset zoom button text
-              zoomButtonClass: "reset-zoom", // reset zoom button class
+              zoomboxBackgroundColor: 'rgba(66,133,244,0.2)', // background color of zoom box
+              zoomboxBorderColor: '#48F', // border color of zoom box
+              zoomButtonText: 'Reset Zoom', // reset zoom button text
+              zoomButtonClass: 'reset-zoom', // reset zoom button class
             },
             callbacks: {
               beforeZoom: () =>
@@ -123,7 +123,7 @@ export function MintPriceChart() {
             ticks: {
               stepSize: 0.05,
               callback: function (value) {
-                return value + " ETH";
+                return value + ' ETH';
               },
             },
           },

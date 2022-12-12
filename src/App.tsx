@@ -1,30 +1,30 @@
-import React, { useContext, useState } from "react";
-import "./App.scss";
-import { Grid } from "@mui/material";
-import { MintBox } from "./components/MintBox/MintBox";
-import { Player } from "./components/Player/Player";
-import ethDiamond from "./assets/eth-diamond.png";
-import styles from "./App.module.scss";
-import scImg from "./assets/smart-contract.png";
-import stopImg from "./assets/stop-sign.png";
-import { Randomizer } from "./components/Randomizer/Randomizer";
-import { IconBar } from "./components/IconBar/IconBar";
-import { DataProviderContext } from "./components/DataProvider/DataProvider";
-import { Trade } from "./components/Trade/Trade";
-import { MintPriceChart } from "./components/MintPriceChart/MintPriceChart";
+import React, { useContext, useState } from 'react';
+import './App.scss';
+import { Grid } from '@mui/material';
+import { MintBox } from './components/MintBox/MintBox';
+import { Player } from './components/Player/Player';
+import ethDiamond from './assets/eth-diamond.png';
+import styles from './App.module.scss';
+import scImg from './assets/smart-contract.png';
+import stopImg from './assets/stop-sign.png';
+import { Randomizer } from './components/Randomizer/Randomizer';
+import { IconBar } from './components/IconBar/IconBar';
+import { DataProviderContext } from './components/DataProvider/DataProvider';
+import { Trade } from './components/Trade/Trade';
+import { MintPriceChart } from './components/MintPriceChart/MintPriceChart';
 
 function useMatchMedia() {
   const [isSm, updateIsSm] = useState(false);
 
   React.useEffect(() => {
     const handler = () => {
-      let sm = window.matchMedia("(max-width: 600px)");
+      let sm = window.matchMedia('(max-width: 600px)');
       updateIsSm(sm.matches);
     };
-    window.addEventListener("resize", handler);
+    window.addEventListener('resize', handler);
     handler();
     return () => {
-      window.removeEventListener("resize", handler);
+      window.removeEventListener('resize', handler);
     };
   }, []);
 
@@ -57,8 +57,8 @@ function App() {
         )}
       </Player> */}
 
-      <div style={{ padding: "6rem 1rem 0" }} className="wrap" id="info">
-        <p style={{ marginBottom: "2rem" }} className="color-4 type-2">
+      <div style={{ padding: '6rem 1rem 0' }} className="wrap" id="info">
+        <p style={{ marginBottom: '2rem' }} className="color-4 type-2">
           The LP
         </p>
         <Grid spacing={4} container>
@@ -66,24 +66,24 @@ function App() {
             <h1 className="jumbo">
               {`AN EXPERIMENTAL APPROACH\nTO BOOTSTRAPPING\nNFT LIQUIDITY\nAND REWARDING HOLDERS`}
             </h1>
-            <h2 style={{ fontWeight: "normal" }} className="type-2 color-3">
+            <h2 style={{ fontWeight: 'normal' }} className="type-2 color-3">
               100% On-Chain. CC0.
             </h2>
           </Grid>
           <Grid item xs={12} md={6}>
             <div
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
               <div
                 style={{
                   flex: 1,
-                  maxWidth: "400px",
-                  borderRadius: "16px",
-                  overflow: "hidden",
+                  maxWidth: '400px',
+                  borderRadius: '16px',
+                  overflow: 'hidden',
                 }}
               >
                 <Randomizer />
@@ -92,9 +92,9 @@ function App() {
           </Grid>
         </Grid>
 
-        <div style={{ maxWidth: "600px", margin: "auto", marginTop: "10rem" }}>
+        <div style={{ maxWidth: '600px', margin: 'auto', marginTop: '10rem' }}>
           <h2
-            style={{ fontWeight: "normal", textAlign: "justify" }}
+            style={{ fontWeight: 'normal', textAlign: 'justify' }}
             className="type-1 color-2"
           >
             A new model to empower NFT creators that solves the NFT liquidity
@@ -198,7 +198,7 @@ function App() {
       </div>
 
       <div
-        style={{ maxWidth: "643px", userSelect: "text", marginBottom: "10px" }}
+        style={{ maxWidth: '643px', userSelect: 'text', marginBottom: '10px' }}
         className="wrap"
       >
         <div className="spacer">
