@@ -1,6 +1,6 @@
-import React from "react";
-import { useContract, useNetwork, useProvider, useSigner } from "wagmi";
-import abi from "../assets/lpabi.json";
+import React from 'react';
+import { useContract, useNetwork, useProvider, useSigner } from 'wagmi';
+import abi from '../assets/lpabi.json';
 
 export function useLpContractRead() {
   const { chain } = useNetwork();

@@ -1,7 +1,7 @@
-import { BigNumber } from "ethers";
-import React, { useCallback, useState } from "react";
-import { chain, useAccount, useContract, useNetwork, useProvider } from "wagmi";
-import abi from "../../assets/lpabi.json";
+import { BigNumber } from 'ethers';
+import React, { useCallback, useState } from 'react';
+import { chain, useAccount, useContract, useNetwork, useProvider } from 'wagmi';
+import abi from '../../assets/lpabi.json';
 
 export type RawToken = {
   tokenId: string;
@@ -32,8 +32,8 @@ const tokenCb = (t: BigNumber): RawToken => {
   return {
     tokenId: id,
     name: `The LP #${id}`,
-    image: "",
-    description: "",
+    image: '',
+    description: '',
   };
 };
 

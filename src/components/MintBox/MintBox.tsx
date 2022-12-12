@@ -1,5 +1,5 @@
-import { Grid } from "@mui/material";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Grid } from '@mui/material';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   useAccount,
   useContract,
@@ -11,17 +11,17 @@ import {
   usePrepareContractWrite,
   useContractWrite,
   useWaitForTransaction,
-} from "wagmi";
-import { Button } from "../Button/Button";
-import { ConnectButton } from "../ConnectButton/ConnectButton";
-import { Randomizer } from "../Randomizer/Randomizer";
-import { TextInput } from "../TextInput/TextInput";
-import styles from "./styles.module.scss";
-import abi from "../../assets/lpabi.json";
-import { ethers } from "ethers";
-import { useCountDown } from "../../utils/useCountDown";
-import BigNumber from "bignumber.js";
-import { DataProviderContext } from "../DataProvider/DataProvider";
+} from 'wagmi';
+import { Button } from '../Button/Button';
+import { ConnectButton } from '../ConnectButton/ConnectButton';
+import { Randomizer } from '../Randomizer/Randomizer';
+import { TextInput } from '../TextInput/TextInput';
+import styles from './styles.module.scss';
+import abi from '../../assets/lpabi.json';
+import { ethers } from 'ethers';
+import { useCountDown } from '../../utils/useCountDown';
+import BigNumber from 'bignumber.js';
+import { DataProviderContext } from '../DataProvider/DataProvider';
 
 const wait = () =>
   new Promise((resolve) =>
@@ -33,8 +33,8 @@ const wait = () =>
 export function MintBox() {
   const { chain } = useNetwork();
   const { isConnected, address } = useAccount();
-  const [amount, updateAmount] = useState("");
-  const bnAmount = new BigNumber(amount || "0");
+  const [amount, updateAmount] = useState('');
+  const bnAmount = new BigNumber(amount || '0');
 
   const provider = useProvider({ chainId: chain?.id });
   const { totalMinted, getAllData } = useContext(DataProviderContext);
@@ -49,14 +49,17 @@ export function MintBox() {
 
   const [data, updateData] = useState<any>();
   const enabled = Boolean(
-    data?.currentMintPrice && !bnAmount.isNaN() && bnAmount.gt(0) && bnAmount.lte(100)
+    data?.currentMintPrice &&
+      !bnAmount.isNaN() &&
+      bnAmount.gt(0) &&
+      bnAmount.lte(100)
   );
   const hasError = bnAmount.gt(100);
 
   const { config } = usePrepareContractWrite({
     address: process.env.REACT_APP_LP_CONTRACT,
     abi,
-    functionName: "mint",
+    functionName: 'mint',
     enabled,
     args: [bnAmount.toFixed()],
     overrides: enabled
@@ -66,7 +69,7 @@ export function MintBox() {
       : void 0,
   });
 
-  let gasLimit = new BigNumber(config?.request?.gasLimit.toString() ?? "0");
+  let gasLimit = new BigNumber(config?.request?.gasLimit.toString() ?? '0');
   gasLimit = gasLimit.plus(gasLimit.times(0.1));
 
   const {
@@ -92,7 +95,7 @@ export function MintBox() {
   const getData = useCallback(
     async (recurseStart?: boolean): Promise<any> => {
       const { timestamp: currentBlockTimeStamp } = await provider.getBlock(
-        "latest"
+        'latest'
       );
       const startTime = await contractRead?.startTime();
       const endTime = await contractRead?.endTime();
@@ -146,7 +149,7 @@ export function MintBox() {
   const mint = useCallback(async () => {
     try {
       if (bnAmount.isNaN()) {
-        return alert("Please enter a valid amount");
+        return alert('Please enter a valid amount');
       }
       write?.();
     } catch (e: any) {
@@ -174,7 +177,7 @@ export function MintBox() {
               <div>
                 <p className="color-3 type-1">Current price</p>
                 <p className="color-1 type-1">
-                  {data?.currentMintPriceDisplay ?? "--"} ETH
+                  {data?.currentMintPriceDisplay ?? '--'} ETH
                 </p>
               </div>
               <div>
@@ -185,7 +188,7 @@ export function MintBox() {
                         .minus(totalMinted)
                         .plus(data?.maxTeamMint ?? 0)
                         .toFixed()
-                    : "--"}{" "}
+                    : '--'}{' '}
                   / {data?.maxPubSale}
                 </p>
               </div>
@@ -209,7 +212,11 @@ export function MintBox() {
                         <label className="type-1 color-1">
                           How many would you like to mint?
                         </label>
-                        {hasError && <p style={{ color: 'red' }} className="type-1">Max 100 per tx</p>}
+                        {hasError && (
+                          <p style={{ color: 'red' }} className="type-1">
+                            Max 100 per tx
+                          </p>
+                        )}
                         <TextInput
                           value={amount}
                           onChange={(e) => updateAmount(e.currentTarget.value)}
@@ -225,7 +232,7 @@ export function MintBox() {
           </Grid>
         </Grid>
 
-        <div style={{ marginTop: "2rem" }}>
+        <div style={{ marginTop: '2rem' }}>
           {hasStarted === true && (
             <div>
               <p className="color-3 type-1">Time left</p>
@@ -234,17 +241,17 @@ export function MintBox() {
                   {timeLeftInfo.months !== 0 && `${timeLeftInfo.months} month `}
                   {timeLeftInfo.days !== 0 &&
                     `${timeLeftInfo.days} ${
-                      timeLeftInfo.days === 1 ? "day" : "days"
+                      timeLeftInfo.days === 1 ? 'day' : 'days'
                     } `}
                   {timeLeftInfo.hours !== 0 &&
                     `${timeLeftInfo.hours} ${
-                      timeLeftInfo.hours === 1 ? "hour" : "hours"
+                      timeLeftInfo.hours === 1 ? 'hour' : 'hours'
                     } `}
                   {`${timeLeftInfo.minutes} ${
-                    timeLeftInfo.minutes === 1 ? "minute" : "minutes"
+                    timeLeftInfo.minutes === 1 ? 'minute' : 'minutes'
                   } `}
                   {`${timeLeftInfo.seconds} ${
-                    timeLeftInfo.seconds === 1 ? "second" : "seconds"
+                    timeLeftInfo.seconds === 1 ? 'second' : 'seconds'
                   } `}
                 </>
               </p>
@@ -261,17 +268,17 @@ export function MintBox() {
                   <>
                     {startInfo.days !== 0 &&
                       `${startInfo.days} ${
-                        startInfo.days === 1 ? "day" : "days"
+                        startInfo.days === 1 ? 'day' : 'days'
                       } `}
                     {startInfo.hours !== 0 &&
                       `${startInfo.hours} ${
-                        startInfo.hours === 1 ? "hour" : "hours"
+                        startInfo.hours === 1 ? 'hour' : 'hours'
                       } `}
                     {`${startInfo.minutes} ${
-                      startInfo.minutes === 1 ? "minute" : "minutes"
+                      startInfo.minutes === 1 ? 'minute' : 'minutes'
                     } `}
                     {`${startInfo.seconds} ${
-                      startInfo.seconds === 1 ? "second" : "seconds"
+                      startInfo.seconds === 1 ? 'second' : 'seconds'
                     } `}
                   </>
                 )}
@@ -279,16 +286,16 @@ export function MintBox() {
             </div>
           )}
         </div>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <a
             href="https://github.com/a16z/a16z-contracts/blob/master/licenses/pdf/06%20-%20a16z%20CBE%20Form%20License%20(CBE-Public).pdf"
             className="color-2 type-1"
             target="_blank"
             style={{
-              display: "inline-block",
-              marginTop: "20px",
-              fontSize: "16px",
-              textAlign: "center",
+              display: 'inline-block',
+              marginTop: '20px',
+              fontSize: '16px',
+              textAlign: 'center',
             }}
             rel="noreferrer"
           >

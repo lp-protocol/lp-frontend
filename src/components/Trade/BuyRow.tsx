@@ -1,24 +1,24 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import {
   useAccount,
   useContract,
   useNetwork,
   useSigner,
   useWaitForTransaction,
-} from "wagmi";
-import { useBuy } from "../../utils/useBuy";
-import { Button } from "../Button/Button";
-import { DataProviderContext, RawToken } from "../DataProvider/DataProvider";
-import styles from "./styles.module.scss";
-import { Token } from "./Trade";
-import BigNumber from "bignumber.js";
-import { Dialog } from "@mui/material";
-import abi from "../../assets/lpabi.json";
-import isequal from "lodash.isequal";
+} from 'wagmi';
+import { useBuy } from '../../utils/useBuy';
+import { Button } from '../Button/Button';
+import { DataProviderContext, RawToken } from '../DataProvider/DataProvider';
+import styles from './styles.module.scss';
+import { Token } from './Trade';
+import BigNumber from 'bignumber.js';
+import { Dialog } from '@mui/material';
+import abi from '../../assets/lpabi.json';
+import isequal from 'lodash.isequal';
 import {
   ConnectButton,
   ConnectButtonBase,
-} from "../ConnectButton/ConnectButton";
+} from '../ConnectButton/ConnectButton';
 
 type BuyRowProps = {
   token: Token | RawToken;
@@ -70,9 +70,9 @@ export const BuyRow = function BuyRow({
           token.tokenId,
           overrides
         );
-        const gasLimit = new BigNumber(estimatedGas?.toString() ?? "0");
+        const gasLimit = new BigNumber(estimatedGas?.toString() ?? '0');
         const gasLimitStr = gasLimit
-          .plus(gasLimit.times("0.25").toFixed(0))
+          .plus(gasLimit.times('0.25').toFixed(0))
           .toFixed();
         const tx = await contract?.buy(token.tokenId, {
           ...overrides,
@@ -104,7 +104,7 @@ export const BuyRow = function BuyRow({
                     <Button
                       // disabled={isLoading}
                       onClick={onBuy}
-                      style={{ width: "100%" }}
+                      style={{ width: '100%' }}
                     >
                       Buy
                     </Button>
@@ -117,7 +117,7 @@ export const BuyRow = function BuyRow({
       </Dialog>
       {!token.image && (
         <div
-          style={{ background: "#000", height: "60px" }}
+          style={{ background: '#000', height: '60px' }}
           className={styles.loading}
         >
           <p className="color-1">LOADING IMAGE</p>
@@ -147,7 +147,7 @@ export const BuyRow = function BuyRow({
                   <Button
                     // disabled={isLoading}
                     onClick={onBuy}
-                    style={{ width: "100px", justifySelf: "flex-end" }}
+                    style={{ width: '100px', justifySelf: 'flex-end' }}
                   >
                     Buy
                   </Button>
