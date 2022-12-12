@@ -272,6 +272,11 @@ export function Trade() {
 
           {tab === 'LISTINGS' && (
             <>
+              {!tokens && (
+                <p className="color-1 type-1">
+                  Loading listings. Please wait...
+                </p>
+              )}
               {tokens && (
                 <div className="spacer">
                   <p className="color-1 type-1">
