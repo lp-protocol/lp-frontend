@@ -249,7 +249,12 @@ export function Trade() {
                       )}
                       {isConnected && (
                         <>
-                          <ClaimMany tokenIds={ownedKeys}/>
+                          {!ownedTokens && (
+                            <p className="color-1 type-1">
+                              Loading. Please wait...
+                            </p>
+                          )}
+                          <ClaimMany tokenIds={ownedKeys} />
                           {ownedKeys.length > 0 && (
                             <div className={tradestyles.listWrap}>
                               <List
